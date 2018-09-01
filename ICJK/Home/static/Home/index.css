@@ -1,3 +1,7 @@
 .nav_title{
    margin-left: 20px;
 }
+
+#search-loading{
+    display:none;
+}

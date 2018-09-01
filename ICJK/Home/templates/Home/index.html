@@ -14,14 +14,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <nav class="nav-extended amber darken-4">
+    <nav class="nav-extended pink darken-3">
         <div class="nav-wrapper">
             <a href="#" class="brand-logo nav_title">{{ appname }}</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
                 <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
-                <li {% if viewtype == "login" %} class='active' {% endif %}><a href="/login">Staff Login</a></li>
             </ul>
         </div>
     </nav>
@@ -29,25 +28,65 @@
     <ul class="sidenav" id="mobile-demo">
         <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
         <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
-        <li {% if viewtype == "login" %} class='active' {% endif %}><a href="/login">Staff Login</a></li>
     </ul>
 
+
     <div class="row">
-    {% for car in carlist %}
-        <div class="col s12 m4">
+
+        <div class="col s12">
+
+
             <div class="card white">
                 <div class="card-content black-text">
-                    <span class="card-title">{{car.name}}</span>
-                    <p>{{car.desc}}</p>
-                </div>
-                <div class="card-action">
-                    <a href="{{car.link}}">More Details</a>
+                    <form method="get">
+                        <div class="input-field s12">
+                            <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
+                            <label for="query">Search</label>
+                        </div>
+                        <input name="viewtype" type="hidden" value="{{viewtype}}">
+
+                        <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    {% endfor %}
+
+
+
+
+
+    {% if carlist %}
+        {% for car in carlist %}
+            <div class="col s3 m6">
+                <div class="card white">
+                    <div class="card-content black-text">
+                        <span class="card-title">{{car.name}}</span>
+                        <p>{{car.desc}}</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="{{car.link}}">More Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+
+    <div class="col s12">
+        <div class="card white">
+            <div class="card-content black-text">
+                <span class="card-title center">There are no cars here <i class="material-icons center">error_outline</i></span>
+                <p class="center">Try altering your search critera to be more general</p>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script src="{% static 'Home/index.js' %}"></script>
 
 </body></html>
