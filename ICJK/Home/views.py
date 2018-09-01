@@ -53,13 +53,13 @@ def search_view(request, viewtype):
     query_result = []
     if query is not None:
         # Simple dummy search until actual search is implemented
-        result = [car for car in dummy_carlist if query in car["name"]]
+        query_result = [car for car in dummy_carlist if query in car["name"]]
 
     return render(request, "Home/index.html", {
         "appname": "ICJK Car Rentals",
-        "query": query_result,
+        "query": query,
         "viewtype":viewtype,
-        "carlist":result
+        "carlist":query_result
     })
 
 def personal(request):
