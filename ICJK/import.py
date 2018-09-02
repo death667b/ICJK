@@ -13,3 +13,21 @@ def clear_database(Order, Store, Customer, Car):
     Car.objects.all().delete()
     
 clear_database(Order, Store, Customer, Car)
+
+storeData = set()
+customerData = set()
+data = csv.DictReader(open('data.csv'))
+
+for row in data:
+    # Get pickup store locations
+    Store_ID = row['Order_PickupStore']
+    Pickup_Store_Name = row['Pickup_Store_Name'].split('_')[0]
+    Pickup_Store_Address = row['Pickup_Store_Address']
+    Pickup_Store_Phone = row['Pickup_Store_Phone'].replace('1 (11)', '').replace('-','') \
+        .replace(' ','').replace('NULL','0')
+    Pickup_Store_City = row['Pickup_Store_City'].strip()
+    Pickup_Store_State_Name = row['Pickup_Store_State_Name']
+    
+    storeData.add(tuple([Store_ID,Pickup_Store_Name,Pickup_Store_Address,Pickup_Store_Phone,
+                     Pickup_Store_City,Pickup_Store_State_Name]))
+    
