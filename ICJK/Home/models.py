@@ -40,3 +40,16 @@ class Car(models.Model):
     body_type = models.CharField(max_length=100)
     drive = models.CharField(max_length=100)
     wheelbase = models.IntegerField()
+
+class Order(models.Model):
+    id = models.AutoField(
+        primary_key=True,
+    )
+    create_date = models.DateField()
+    pickup_date = models.DateField()
+    return_date = models.DateField()
+    fk_car_id = models.ForeignKey(Car, on_delete=models.PROTECT)
+    fk_customer_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    fk_pickup_store_id = models.ForeignKey(Store, on_delete=models.PROTECT, related_name='fk_pickup_store_id')
+    fk_return_store_id = models.ForeignKey(Store, on_delete=models.PROTECT, related_name='fk_return_store_id')
+
