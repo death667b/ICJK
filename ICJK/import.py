@@ -101,8 +101,6 @@ for row in storeData:
     s.save()
 
 for row in customerData:
-    c = Customer(id=row[0], name=row[1], address=row[2], phone=row[3], birthday=row[4], occupation=row[5], gender=row[6])
-    c.save()   
     c = Customer(id=row[0], name=row[1], address=row[2], phone=row[3], birthday=row[4], 
         occupation=row[5], gender=row[6])
     c.save()   
