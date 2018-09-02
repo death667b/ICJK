@@ -127,3 +127,10 @@ for row in orderData:
         fk_car_id=Car.objects.get(pk=row[4]), fk_customer_id=Customer.objects.get(pk=row[5]), # pylint: disable=E1101
         fk_pickup_store_id=Store.objects.get(pk=row[6]), fk_return_store_id=Store.objects.get(pk=row[7])) # pylint: disable=E1101
     o.save()
+
+incompleteOrders = [13, 21, 28, 62, 92, 94, 86, 192, 221, 219, 363, 345, 366, 406, 413]
+
+for orderNum in incompleteOrders:
+    o=Order.objects.get(pk=orderNum) # pylint: disable=E1101
+    o.order_complete=False
+    o.save()
