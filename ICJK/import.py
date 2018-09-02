@@ -1,6 +1,16 @@
 # This will seed the data base with data from data.csv
 # need to copy and paste this in to the shell
+#
+# First copy everything in this file
+# The control-A (select all) and then control-c (copy)
+#
+# Then open the django management shell
 # python3 manage.py shell
+#
+# Then paste everything into the shell.
+# control-v (paste) and then press enter 2-3 times. 
+# note: this process takes about 10 seconds
+
 
 from Home.models import Store, Customer, Car, Order
 import csv
