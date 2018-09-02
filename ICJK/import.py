@@ -78,6 +78,22 @@ for row in data:
                      Car_EngineSize,Car_FuelSystem,Car_TankCapacity,Car_Power,Car_SeatingCapacity,
                      Car_StandardTransmission,Car_BodyType,Car_Drive,Car_Wheelbase]))
 
+    # Get Orders
+    Order_ID = row['\ufeffOrder_ID']
+    Order_CreateDate = row['Order_CreateDate'].strip()
+    Order_CreateDate = datetime.datetime.strptime(Order_CreateDate, "%Y%m%d").strftime("%Y-%m-%d")
+    Order_PickupDate = row['Order_PickupDate'].strip()
+    Order_PickupDate = datetime.datetime.strptime(Order_PickupDate, "%Y%m%d").strftime("%Y-%m-%d")
+    Order_ReturnDate = row['Order_ReturnDate'].strip()
+    Order_ReturnDate = datetime.datetime.strptime(Order_ReturnDate, "%Y%m%d").strftime("%Y-%m-%d")
+    fk_car_id = int(row['Car_ID'])
+    fk_customer_id = int(row['Customer_ID'])
+    fk_pickup_store_id = int(row['Order_PickupStore'])
+    fk_return_store_id = int(row['Order_ReturnStore'])
+    
+    orderData.add(tuple([Order_ID,Order_CreateDate,Order_PickupDate,Order_ReturnDate,
+                     fk_car_id,fk_customer_id,fk_pickup_store_id,fk_return_store_id]))
+
 for row in storeData:
     s = Store(id=row[0], name=row[1], address=row[2], phone=row[3], city=row[4], state=row[5])
     s.save()
