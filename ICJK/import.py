@@ -43,3 +43,27 @@ for row in data:
     storeData.add(tuple([Store_ID,Pickup_Store_Name,Pickup_Store_Address,Pickup_Store_Phone,
                      Pickup_Store_City,Pickup_Store_State_Name]))
 
+    # Get customers
+    Customer_ID = row['Customer_ID']
+    Customer_Name = row['Customer_Name']
+    Customer_Phone = row['Customer_Phone'].replace('1 (11)', '').replace('-','') \
+        .replace(' ','').replace('NULL','0').replace('*','')
+    Customer_Addresss = row['Customer_Addresss']
+    Customer_Brithday = row['Customer_Brithday'].strip()  
+    Customer_Brithday = datetime.datetime.strptime(Customer_Brithday, "%d/%m/%Y").strftime("%Y-%m-%d")
+    Customer_Occupation = row['Customer_Occupation']
+    Customer_Gender = row['Customer_Gender']
+    # Get customers
+    Customer_ID = row['Customer_ID']
+    Customer_Name = row['Customer_Name']
+    Customer_Phone = row['Customer_Phone'].replace('1 (11)', '').replace('-','') \
+        .replace(' ','').replace('NULL','0').replace('*','')
+    Customer_Addresss = row['Customer_Addresss']
+    Customer_Brithday = row['Customer_Brithday'].strip()  
+    Customer_Brithday = datetime.datetime.strptime(Customer_Brithday, "%d/%m/%Y").strftime("%Y-%m-%d")
+    Customer_Occupation = row['Customer_Occupation']
+    Customer_Gender = row['Customer_Gender']
+    
+    customerData.add(tuple([Customer_ID,Customer_Name,Customer_Addresss,Customer_Phone,
+                     Customer_Brithday,Customer_Occupation,Customer_Gender]))
+
