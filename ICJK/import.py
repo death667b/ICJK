@@ -57,6 +57,27 @@ for row in data:
     customerData.add(tuple([Customer_ID,Customer_Name,Customer_Addresss,Customer_Phone,
                      Customer_Brithday,Customer_Occupation,Customer_Gender]))
 
+    # Get cars
+    Car_ID = row['Car_ID']
+    Car_MakeName = row['Car_MakeName']
+    Car_Model = row['Car_Model']
+    Car_Series = row['Car_Series']
+    Car_SeriesYear = row['Car_SeriesYear'].replace('NULL', '0')
+    Car_PriceNew = row['Car_PriceNew'].replace('NULL', '0')
+    Car_EngineSize = row['Car_EngineSize'].replace('NULL', '0.0').replace('L','')
+    Car_FuelSystem = row['Car_FuelSystem']
+    Car_TankCapacity = row['Car_TankCapacity'].replace('NULL', '0').replace('L','')
+    Car_Power = row['Car_Power'].replace('NULL', '0').replace('Kw','')
+    Car_SeatingCapacity = row['Car_SeatingCapacity'].replace('NULL', '0')
+    Car_StandardTransmission = row['Car_StandardTransmission']
+    Car_BodyType = row['Car_BodyType']
+    Car_Drive = row['Car_Drive']
+    Car_Wheelbase = row['Car_Wheelbase'].replace('NULL', '0').replace('mm','')
+    
+    carsData.add(tuple([Car_ID,Car_MakeName,Car_Model,Car_Series,Car_SeriesYear,Car_PriceNew,
+                     Car_EngineSize,Car_FuelSystem,Car_TankCapacity,Car_Power,Car_SeatingCapacity,
+                     Car_StandardTransmission,Car_BodyType,Car_Drive,Car_Wheelbase]))
+
 for row in storeData:
     s = Store(id=row[0], name=row[1], address=row[2], phone=row[3], city=row[4], state=row[5])
     s.save()
