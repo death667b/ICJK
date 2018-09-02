@@ -48,6 +48,7 @@ class Order(models.Model):
     create_date = models.DateField()
     pickup_date = models.DateField()
     return_date = models.DateField()
+    order_complete = models.BooleanField(default=True)
     fk_car_id = models.ForeignKey(Car, on_delete=models.PROTECT)
     fk_customer_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
     fk_pickup_store_id = models.ForeignKey(Store, on_delete=models.PROTECT, related_name='fk_pickup_store_id')
