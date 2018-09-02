@@ -16,6 +16,8 @@ clear_database(Order, Store, Customer, Car)
 
 storeData = set()
 customerData = set()
+carsData = set()
+orderData = set()
 data = csv.DictReader(open('data.csv'))
 
 for row in data:
