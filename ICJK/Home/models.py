@@ -16,7 +16,7 @@ class Customer(models.Model):
         primary_key=True,
     )
     name = models.CharField(max_length=100)
-    adress = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
     phone = models.IntegerField()
     birthday = models.DateField()
     occupation = models.CharField(max_length=100)
