@@ -53,16 +53,6 @@ for row in data:
     Customer_Brithday = datetime.datetime.strptime(Customer_Brithday, "%d/%m/%Y").strftime("%Y-%m-%d")
     Customer_Occupation = row['Customer_Occupation']
     Customer_Gender = row['Customer_Gender']
-    # Get customers
-    Customer_ID = row['Customer_ID']
-    Customer_Name = row['Customer_Name']
-    Customer_Phone = row['Customer_Phone'].replace('1 (11)', '').replace('-','') \
-        .replace(' ','').replace('NULL','0').replace('*','')
-    Customer_Addresss = row['Customer_Addresss']
-    Customer_Brithday = row['Customer_Brithday'].strip()  
-    Customer_Brithday = datetime.datetime.strptime(Customer_Brithday, "%d/%m/%Y").strftime("%Y-%m-%d")
-    Customer_Occupation = row['Customer_Occupation']
-    Customer_Gender = row['Customer_Gender']
     
     customerData.add(tuple([Customer_ID,Customer_Name,Customer_Addresss,Customer_Phone,
                      Customer_Brithday,Customer_Occupation,Customer_Gender]))
@@ -70,4 +60,7 @@ for row in data:
 for row in storeData:
     s = Store(id=row[0], name=row[1], address=row[2], phone=row[3], city=row[4], state=row[5])
     s.save()
-    
+
+for row in customerData:
+    c = Customer(id=row[0], name=row[1], address=row[2], phone=row[3], birthday=row[4], occupation=row[5], gender=row[6])
+    c.save()   
