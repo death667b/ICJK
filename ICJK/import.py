@@ -101,3 +101,14 @@ for row in storeData:
 for row in customerData:
     c = Customer(id=row[0], name=row[1], address=row[2], phone=row[3], birthday=row[4], occupation=row[5], gender=row[6])
     c.save()   
+    c = Customer(id=row[0], name=row[1], address=row[2], phone=row[3], birthday=row[4], 
+        occupation=row[5], gender=row[6])
+    c.save()   
+
+for row in carsData:
+    cars = Car(id=row[0], make_name=row[1], model=row[2],series=row[3],series_year=row[4],
+        price_new=row[5], engine_size=row[6], fuel_system=row[7], tank_capacity=row[8], 
+        power=row[9], seating_capacity=row[10], standard_transmission=row[11], body_type=row[12],
+        drive=row[13], wheelbase=row[14])
+    cars.save()
+
