@@ -70,3 +70,4 @@ for row in data:
 for row in storeData:
     s = Store(id=row[0], name=row[1], address=row[2], phone=row[3], city=row[4], state=row[5])
     s.save()
+    
