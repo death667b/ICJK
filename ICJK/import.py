@@ -31,3 +31,15 @@ for row in data:
     storeData.add(tuple([Store_ID,Pickup_Store_Name,Pickup_Store_Address,Pickup_Store_Phone,
                      Pickup_Store_City,Pickup_Store_State_Name]))
     
+    # Get return store locations
+    Store_ID = row['Order_ReturnStore']
+    Pickup_Store_Name = row['Return_Store_Name'].split('_')[0]
+    Pickup_Store_Address = row['Return_Store_Address']
+    Pickup_Store_Phone = row['Return_Store_Phone'].replace('1 (11)', '').replace('-','') \
+        .replace(' ','').replace('NULL','0')
+    Pickup_Store_City = row['Return_Store_City'].strip()
+    Pickup_Store_State_Name = row['Return_Store_State']
+    
+    storeData.add(tuple([Store_ID,Pickup_Store_Name,Pickup_Store_Address,Pickup_Store_Phone,
+                     Pickup_Store_City,Pickup_Store_State_Name]))
+
