@@ -67,3 +67,6 @@ for row in data:
     customerData.add(tuple([Customer_ID,Customer_Name,Customer_Addresss,Customer_Phone,
                      Customer_Brithday,Customer_Occupation,Customer_Gender]))
 
+for row in storeData:
+    s = Store(id=row[0], name=row[1], address=row[2], phone=row[3], city=row[4], state=row[5])
+    s.save()
