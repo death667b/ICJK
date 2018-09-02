@@ -112,3 +112,8 @@ for row in carsData:
         drive=row[13], wheelbase=row[14])
     cars.save()
 
+for row in orderData:
+    o = Order(id=row[0], create_date=row[1], pickup_date=row[2], return_date=row[3], order_complete=True, 
+        fk_car_id=Car.objects.get(pk=row[4]), fk_customer_id=Customer.objects.get(pk=row[5]), # pylint: disable=E1101
+        fk_pickup_store_id=Store.objects.get(pk=row[6]), fk_return_store_id=Store.objects.get(pk=row[7])) # pylint: disable=E1101
+    o.save()
