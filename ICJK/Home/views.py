@@ -67,5 +67,3 @@ def personal(request):
 
 def commercial(request):
     return search_view(request, "commercial")
-
-
