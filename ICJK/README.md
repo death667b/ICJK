@@ -21,6 +21,8 @@ mysqladmin -u root -p create icjkdatabase
 
 5. Modify the ICJK/settings.py in the DATABASES section
 https://medium.com/@bencleary/django-mysql-for-windows-528272b3169b
+- For security, set a environment varible with your password
+export MYSQL_PASSWORD=**********
 
 6. Prepair the database migration (You only need to do this if the DB has changed)
 python3 manage.py makemigrations
