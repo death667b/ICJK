@@ -41,9 +41,6 @@ class Car(models.Model):
     drive = models.CharField(max_length=100)
     wheelbase = models.IntegerField()
 
-    def has_seats(self, seats):
-        return self.seating_capacity >= seats
-
 class Order(models.Model):
     id = models.AutoField(
         primary_key=True,

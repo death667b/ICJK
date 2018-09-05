@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from .models import Car
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In orci justo, facilisis non pulvinar aliquam, ullamcorper vel purus."
 
@@ -49,17 +50,23 @@ def index(request):
 def search_view(request, viewtype):
 
     query = request.GET.get('query', None)
+    min_seats = request.GET.get('min_seats', None)
 
-    query_result = []
-    if query is not None:
-        # Simple dummy search until actual search is implemented
-        query_result = [car for car in dummy_carlist if query in car["name"]]
+    query_result = Car.objects.all()
+    #if query is not None:
+        #Simple dummy search until actual search is implemented
+    #    query_result = [car for car in dummy_carlist if query in car["name"]]
+
+    #passenger Count filter
+    if min_seats is not None:
+        query_result = query_result.filter(seating_capacity__gte = min_seats)
 
     return render(request, "Home/index.html", {
         "appname": "ICJK Car Rentals",
         "query": query,
         "viewtype":viewtype,
-        "carlist":query_result
+        "min_seats": min_seats,
+        "carlist":query_result,
     })
 
 def personal(request):

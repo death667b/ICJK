@@ -44,7 +44,8 @@
                             <label for="query">Search</label>
                         </div>
                         <input name="viewtype" type="hidden" value="{{viewtype}}">
-
+                        <label for="min_seats">Minimal passenger capacity</label>
+                        <input name="min_seats" type="range" id="min_seats" min="1" max="12"/>
                         <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
                             <i class="material-icons right">send</i>
                         </button>
@@ -55,15 +56,15 @@
 
 
 
-
-
     {% if carlist %}
         {% for car in carlist %}
             <div class="col s3 m6">
                 <div class="card white">
                     <div class="card-content black-text">
-                        <span class="card-title">{{car.name}}</span>
-                        <p>{{car.desc}}</p>
+                        <span class="card-title">{{car.make_name}} {{car.model}}</span>
+                        <p>Seats: {{car.seating_capacity}}</p>
+                        <!-- price_new should be daily price -->
+                        <p>Price: {{car.price_new}}</p>
                     </div>
                     <div class="card-action">
                         <a href="{{car.link}}">More Details</a>
