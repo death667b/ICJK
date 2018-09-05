@@ -7,7 +7,7 @@ class Store(models.Model):
     )
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    phone = models.IntegerField()
+    phone = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
 
@@ -17,7 +17,7 @@ class Customer(models.Model):
     )
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    phone = models.IntegerField()
+    phone = models.CharField(max_length=100)
     birthday = models.DateField()
     occupation = models.CharField(max_length=100)
     gender = models.CharField(max_length=20)
