@@ -39,13 +39,32 @@
             <div class="card white">
                 <div class="card-content black-text">
                     <form method="get">
+                        <!-- query filter -->
                         <div class="input-field s12">
                             <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
                             <label for="query">Search</label>
                         </div>
-                        <input name="viewtype" type="hidden" value="{{viewtype}}">
-                        <label for="min_seats">Minimal passenger capacity</label>
-                        <input name="min_seats" type="range" id="min_seats" min="1" max="12"/>
+                        <!-- passenger capacity filter -->
+                        <div>
+                            <input name="viewtype" type="hidden" value="{{viewtype}}">
+                            <label for="min_seats">Minimal passenger capacity</label>
+                            <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
+                        </div>
+                        <!-- price filter -->
+                        <div class="row">
+                            <div class="col s6">
+                                <input id="min_price" type="text" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
+                                <label for="min_price">Minimal Price</label>
+                            </div>
+                            <div class="col s6">
+                                <input id="max_price" type="text" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
+                                <label for="max_price">Maximal Price</label>
+                            </div>
+                        </div>
+                        <!-- make model year filter -->
+                        
+
+
                         <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
                             <i class="material-icons right">send</i>
                         </button>
@@ -53,7 +72,6 @@
                 </div>
             </div>
         </div>
-
 
 
     {% if carlist %}
@@ -87,5 +105,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="{% static 'Home/index.js' %}"></script>
+
 
 </body></html>
