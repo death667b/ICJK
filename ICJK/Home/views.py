@@ -13,6 +13,9 @@ def search_view(request, viewtype):
     min_seats = request.GET.get('min_seats', None)
     min_price = request.GET.get('min_price', None)
     max_price = request.GET.get('max_price', None)
+    make = request.GET.get('make', None)
+    model_name = request.GET.get('model', None)
+    year = request.GET.get('year', None)
 
 
     query_result = []
@@ -29,16 +32,34 @@ def search_view(request, viewtype):
         db_query &= (Q(seating_capacity__gte = min_seats))
 
     #price filter
-    #bug: try max: 1 you will get cars, what doesnt make sense
     if min_price is not None:
         if min_price:
-            min_new_price = min_price*3000 #change factor
+            min_new_price = int(min_price)*3000 #change factor
             db_query &= (Q(price_new__gte = min_new_price))
 
     if max_price is not None:
         if max_price:
-            max_new_price = max_price*3000 #change factor
+            max_new_price = int(max_price)*3000 #change factor
             db_query &= (Q(price_new__lt = max_new_price))
+
+    #make_name filter
+    model_query = Q()
+    make_name_set = Car.objects.filter(model_query).values_list('make_name').distinct()
+    if make is not None:
+        db_query &= Q(make_name = make)
+        model_query &= Q(make_name = make)
+
+    #model filter
+    model_set = Car.objects.filter(model_query).values_list('model').distinct()
+    if model_name is not None:
+        db_query &= Q(model = model_name)
+        model_query &= Q(model = model_name)
+
+    #year filter
+    year_set = Car.objects.filter(model_query).values_list('series_year').distinct()
+    if year is not None:
+        db_query &= Q(series_year = year)
+        model_query &= Q(series_year = year)
 
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
@@ -58,6 +79,9 @@ def search_view(request, viewtype):
         "query": query,
         "viewtype": viewtype,
         "min_seats": min_seats,
+        "makelist" : make_name_set,
+        "modellist" : model_set,
+        "yearlist" : year_set,
         "min_price": min_price,
         "max_price": max_price,
         "carlist": query_result,
