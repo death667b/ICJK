@@ -9,10 +9,10 @@ https://dev.mysql.com/downloads/mysql/
 export PATH=$PATH:/usr/local/mysql/bin
 
 3. Install the python MySQL connector
-pip install mysqlclient
+pip install mysqlclient django
 - OR if you have python3 from Anaconda instead you do
-conda install mysqlclient
-(conda install -c bioconda mysqlclient) This is the exact command that actually worked for me
+conda install mysqlclient django
+(conda install -c bioconda mysqlclient django) This is the exact command that actually worked for me
 - you might then need to reinstall Django because Anaconda messes up the pathing
 conda install django
 

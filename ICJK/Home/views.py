@@ -35,12 +35,12 @@ def search_view(request, viewtype):
     #price filter
     if min_price is not None:
         if min_price:
-            min_new_price = int(min_price)*3000 #change factor
+            min_new_price = int(min_price)*500 #change factor
             db_query &= (Q(price_new__gte = min_new_price))
 
     if max_price is not None:
         if max_price:
-            max_new_price = int(max_price)*3000 #change factor
+            max_new_price = int(max_price)*500 #change factor
             db_query &= (Q(price_new__lt = max_new_price))
 
     #make_name filter
