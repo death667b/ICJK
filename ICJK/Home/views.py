@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from .models import Car
 from django.db.models import Q
 
-from .CarView import CommercialCarView
+from .CarView import PersonalCarView, CommercialCarView
 
 # Create your views here.
 def index(request):
@@ -69,7 +69,7 @@ def search_view(request, viewtype):
          "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
                  (car.make_name.title(), car.model.title(), car.series, car.series_year, car.body_type.lower(), car.drive.lower()
                   , car.seating_capacity, car.power, car.engine_size),
-         "link": car.id}
+         "link": "cars/%i"%car.id}
         for car in query_set
         #isn´t it more efficient to do this in the index.html since there is already a for loop?
         ]
@@ -95,4 +95,4 @@ def commercial(request):
     return search_view(request, "commercial")
 
 def carview(request, db_id):
-    return CommercialCarView(db_id).render(request)
+    return PersonalCarView(db_id).render(request)

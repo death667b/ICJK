@@ -1,3 +1,77 @@
 <html>
-    {{ name }}
+    <head>
+        <title>{{ appname }}</title>
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'Home/index.css' %}">
+
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <nav class="nav-extended pink darken-3">
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo nav_title">{{ appname }}</a>
+            </div>
+        </nav>
+        
+        <div class='container'>
+            <div class="row">
+                <div class="col s6">
+                    <div class="card white medium">
+                        <div class="card-image">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Ic_directions_car_48px.svg/72px-Ic_directions_car_48px.svg.png">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">{{fullname}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="card medium">
+                        <div class="card-content">
+                            <span class="card-title">Locations</span>
+                            <div class="divider"></div>
+                            <div class="row"></div> <!-- just using some rows to make spacing look nicer -->
+                            {% if locations %}
+                                {% for location in locations %}
+                                    <div class="row">
+                                        <div class='col s6'>{{ location.address }}</div>
+                                        <div class='col s6'>${{ location.phone }}</div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="row">
+                                    <div class='col s12'>Currently Unavailable</div>
+                                </div>
+                            {% endif %}
+                            <div class="row"></div>
+                            <span class="card-title">Pricing</span>
+                            <div class="divider"></div>
+                            <div class="row"></div>
+                            {% for price in pricelist %}
+                                <div class='row'>
+                                    <div class='col s6'>{{ price.period }}</div>
+                                    <div class='col s6'>${{ price.cost }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12">
+                    <div class="card white">
+                        <div class="card-content">
+                            <span class="card-title">Details</span>
+                            -- todo --
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

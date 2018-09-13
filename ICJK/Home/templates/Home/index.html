@@ -36,7 +36,7 @@
             <div class="col s12">
 
 
-                <div class="card white">
+                <div class="card white hoverable">
                     <div class="card-content black-text">
                         <form method="get">
                             <!-- query filter -->
@@ -110,8 +110,8 @@
 
         {% if carlist %}
             {% for car in carlist %}
-                <div class="col s3 m6">
-                    <div class="card white">
+                <div class="col s12 m6">
+                    <div class="card small white hoverable">
                         <div class="card-content black-text">
                             <span class="card-title">{{car.name}}</span>
                             <p>{{car.desc}}</p>
