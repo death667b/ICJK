@@ -24,8 +24,7 @@ def search_view(request, viewtype):
         query_words = query.split()
         print(query_words)
         for word in query_words:
-            db_query &= Q(Q(make_name__contains=word) | Q(model__contains=word))
-        #db_query.add(Q(model__in=query_words), Q.OR)
+            db_query &= Q(Q(make_name__icontains=word) | Q(model__icontains=word))
 
     #passenger Count filter
     if min_seats is not None:

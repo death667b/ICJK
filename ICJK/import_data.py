@@ -28,7 +28,7 @@ storeData = set()
 customerData = set()
 carsData = set()
 orderData = set()
-data = csv.DictReader(open('data.csv'))
+data = csv.DictReader(open('data.csv', encoding='utf-8-sig'))
 
 for row in data:
     # Get pickup store locations
@@ -91,7 +91,7 @@ for row in data:
                      Car_StandardTransmission,Car_BodyType,Car_Drive,Car_Wheelbase]))
 
     # Get Orders
-    Order_ID = row['\ufeffOrder_ID']
+    Order_ID = row['Order_ID']
     Order_CreateDate = row['Order_CreateDate'].strip()
     Order_CreateDate = datetime.datetime.strptime(Order_CreateDate, "%Y%m%d").strftime("%Y-%m-%d")
     Order_PickupDate = row['Order_PickupDate'].strip()

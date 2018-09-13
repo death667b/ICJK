@@ -30,113 +30,114 @@
         <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
     </ul>
 
+    <div class='container'>
+        <div class="row">
 
-    <div class="row">
-
-        <div class="col s12">
-
-
-            <div class="card white">
-                <div class="card-content black-text">
-                    <form method="get">
-                        <!-- query filter -->
-                        <div class="input-field s12">
-                            <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
-                            <label for="query">Search</label>
-                        </div>
-                        <!-- passenger capacity filter -->
-                        <div>
-                            <input name="viewtype" type="hidden" value="{{viewtype}}">
-                            <label for="min_seats">Minimal passenger capacity</label>
-                            <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
-                        </div>
-                        <!-- price filter -->
-                        <div class="row">
-                            <div class="col s6">
-                                <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
-                                <label for="min_price">Minimal Price</label>
-                            </div>
-                            <div class="col s6">
-                                <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
-                                <label for="max_price">Maximal Price</label>
-                            </div>
-                        </div>
-                        <!-- make model year filter -->
-                        {% if makelist %}
-                        <div class="input-field col s12 m4">
-                          <select name="make" id="make">
-                                <option value = "" disabled selected>Select make</option>
-                                  {% for make in makelist %}
-                                      <option value = "{{make.0}}">{{make.0}}</option>
-                                  {% endfor %}
-                          </select>
-                          <label for="make">make</label>
-                        </div>
-                        {% endif %}
-
-                        {% if modellist %}
-                        <div class="input-field col s12 m4">
-                          <select name="model" id="model">
-                                <option value = "" disabled selected>Select model</option>
-                                  {% for model in modellist %}
-                                      <option value = "{{model.0}}">{{model.0}}</option>
-                                  {% endfor %}
-                          </select>
-                          <label for="model">model</label>
-                        </div>
-                        {% endif %}
-
-                        {% if yearlist %}
-                        <div class="input-field col s12 m4">
-                          <select name="year" id="year">
-                                <option value = "" disabled selected>Select year</option>
-                                  {% for year in yearlist %}
-                                      <option value = "{{year.0}}">{{year.0}}</option>
-                                  {% endfor %}
-                          </select>
-                          <label for="year">year</label>
-                        </div>
-                        {% endif %}
+            <div class="col s12">
 
 
-                        <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
-                            <i class="material-icons right">send</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-    {% if carlist %}
-        {% for car in carlist %}
-            <div class="col s3 m6">
                 <div class="card white">
                     <div class="card-content black-text">
-                        <span class="card-title">{{car.name}}</span>
-                        <p>{{car.desc}}</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="{{car.link}}">More Details</a>
+                        <form method="get">
+                            <!-- query filter -->
+                            <div class="input-field s12">
+                                <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
+                                <label for="query">Search</label>
+                            </div>
+                            <!-- passenger capacity filter -->
+                            <div>
+                                <input name="viewtype" type="hidden" value="{{viewtype}}">
+                                <label for="min_seats">Minimal passenger capacity</label>
+                                <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
+                            </div>
+                            <!-- price filter -->
+                            <div class="row">
+                                <div class="col s6">
+                                    <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
+                                    <label for="min_price">Minimal Price</label>
+                                </div>
+                                <div class="col s6">
+                                    <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
+                                    <label for="max_price">Maximal Price</label>
+                                </div>
+                            </div>
+                            <!-- make model year filter -->
+                            {% if makelist %}
+                            <div class="input-field col s12 m4">
+                            <select name="make" id="make">
+                                    <option value = "" disabled selected>Select make</option>
+                                    {% for make in makelist %}
+                                        <option value = "{{make.0}}">{{make.0}}</option>
+                                    {% endfor %}
+                            </select>
+                            <label for="make">make</label>
+                            </div>
+                            {% endif %}
+
+                            {% if modellist %}
+                            <div class="input-field col s12 m4">
+                            <select name="model" id="model">
+                                    <option value = "" disabled selected>Select model</option>
+                                    {% for model in modellist %}
+                                        <option value = "{{model.0}}">{{model.0}}</option>
+                                    {% endfor %}
+                            </select>
+                            <label for="model">model</label>
+                            </div>
+                            {% endif %}
+
+                            {% if yearlist %}
+                            <div class="input-field col s12 m4">
+                            <select name="year" id="year">
+                                    <option value = "" disabled selected>Select year</option>
+                                    {% for year in yearlist %}
+                                        <option value = "{{year.0}}">{{year.0}}</option>
+                                    {% endfor %}
+                            </select>
+                            <label for="year">year</label>
+                            </div>
+                            {% endif %}
+
+
+                            <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    {% else %}
 
-    <div class="col s12">
-        <div class="card white">
-            <div class="card-content black-text">
-                <span class="card-title center">There are no cars here <i class="material-icons center">error_outline</i></span>
-                <p class="center">Try altering your search critera to be more general</p>
+
+        {% if carlist %}
+            {% for car in carlist %}
+                <div class="col s3 m6">
+                    <div class="card white">
+                        <div class="card-content black-text">
+                            <span class="card-title">{{car.name}}</span>
+                            <p>{{car.desc}}</p>
+                        </div>
+                        <div class="card-action">
+                            <a href="{{car.link}}">More Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+
+        <div class="col s12">
+            <div class="card white">
+                <div class="card-content black-text">
+                    <span class="card-title center">There are no cars here <i class="material-icons center">error_outline</i></span>
+                    <p class="center">Try altering your search critera to be more general</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    {% endif %}
+        {% endif %}
 
+        </div>
     </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="{% static 'Home/index.js' %}"></script>
 
