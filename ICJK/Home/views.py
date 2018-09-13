@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from .models import Car
 from django.db.models import Q
 
+from .CarView import CommercialCarView
+
 # Create your views here.
 def index(request):
     return redirect("/personal")
@@ -91,3 +93,6 @@ def personal(request):
 
 def commercial(request):
     return search_view(request, "commercial")
+
+def carview(request, db_id):
+    return CommercialCarView(db_id).render(request)
