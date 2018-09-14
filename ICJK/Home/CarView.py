@@ -1,6 +1,7 @@
 from .models import Car
 from django.shortcuts import render
 from django.http import Http404
+from django.forms.models import model_to_dict
 
 class CarView():
     def __init__(self, db_id):
@@ -18,10 +19,23 @@ class CarView():
             break
 
     def make_default_json_params(self):
-        return {
+        data = {
             "fullname": "%s %s %s"%(self.car_data.make_name.title(), self.car_data.model.title(), self.car_data.series.title()),
             "appname": "ICJK Car Rentals"
         }
+
+        model_data = model_to_dict(self.car_data)
+        model_data_pretty = {}
+        for k,v in model_data.items():
+            if k.lower() == "id":
+                continue
+            if k.lower() == "null" or v.lower() == "null"
+                continue
+            model_data_pretty[k.title().replace('_',' ')] = str(v).title()
+
+        data.update({"details":model_data_pretty})
+
+        return data
     
     def get_rental_price_for_days(self, days):
         return int((self.car_data.price_new * days)/500)
