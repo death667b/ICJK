@@ -19,7 +19,7 @@
       <div class='container'>
          <div class="row">
             <div class="col s6">
-               <div class="card white medium">
+               <div class="card white tall">
                   <div class="card-image">
                      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Ic_directions_car_48px.svg/72px-Ic_directions_car_48px.svg.png">
                   </div>
@@ -29,7 +29,7 @@
                </div>
             </div>
             <div class="col s6">
-               <div class="card white medium">
+               <div class="card white tall">
                   <div class="card-content">
                      <span class="card-title">Locations</span>
                      <div class="divider"></div>
@@ -67,9 +67,10 @@
                             <script type="text/javascript">
                                 function get_quote(){
                                     let multiplier = {{ pricemultiplier }};
-                                    let input = document.getElementById("rental_quote");
+                                    let days = document.getElementById("rental_days").value;
+                                    let quantity = document.getElementById("rental_quantity").value;
                                     let output = document.getElementById("quote_result");
-                                    output.innerHTML = "$" + Math.round(input.value * multiplier);
+                                    output.innerHTML = "$" + Math.round(days * quantity * multiplier);
                                 }
                             </script>
                                     <div class="row">
@@ -77,13 +78,15 @@
                                     </div>
                                     <div class="row">
                                         <div class="center-align col s12">
-                                            <h6 id="quote_result"> Pick a time </h6>
+                                            <h6 id="quote_result"> Pick a time and quantity </h6>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col s12">
-                                            <input id="rental_quote" type="number" name="rental_quote" min="1" value="1">
-                                            <label for="rental_quote">Days</label>
+                                            <input id="rental_days" type="number" name="rental_days" min="1" value="1">
+                                            <label for="rental_days">Days</label>
+                                            <input id="rental_quantity" type="number" name="rental_quantity" min="1" value="1">
+                                            <label for="rental_quantity">Quantity</label>
                                         </div>
                                     </div>
                                    

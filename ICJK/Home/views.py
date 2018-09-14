@@ -21,7 +21,7 @@ def search_view(request, viewtype):
 
 
     query_result = []
-    db_query = Q()
+    db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
     if query is not None and query is not '':
         query_words = query.split()
         print(query_words)
@@ -61,6 +61,12 @@ def search_view(request, viewtype):
     if year is not None:
         db_query &= Q(series_year = year)
         model_query &= Q(series_year = year)
+
+    #commercial / personal filter
+    if viewtype == "commercial":
+        db_query &= Q(model__icontains="VAN")
+    elif viewtype == "personal":
+        db_query &= ~Q(model__icontains="VAN")
 
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
