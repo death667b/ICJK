@@ -16,7 +16,7 @@
 <body>
     <nav class="nav-extended pink darken-3">
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo nav_title">{{ appname }}</a>
+            <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>

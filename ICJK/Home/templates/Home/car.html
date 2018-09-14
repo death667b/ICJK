@@ -13,7 +13,7 @@
    <body>
       <nav class="nav-extended pink darken-3">
          <div class="nav-wrapper">
-            <a href="#" class="brand-logo nav_title">{{ appname }}</a>
+            <a href="{{ homelink }}" class="brand-logo nav_title">{{ appname }}</a>
          </div>
       </nav>
       <div class='container'>
@@ -52,16 +52,43 @@
                      <div class="divider"></div>
                      <div class="row"></div>
                      <div class="row">
+                        {% if viewtype == "personal" %}
                         <table>
                             <tbody>
-                            {% for price in pricelist %}
-                                <tr>
-                                    <td>{{ price.period }}</td>
-                                    <td>${{ price.cost }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
+                                {% for price in pricelist %}
+                                    <tr>
+                                        <td>{{ price.period }}</td>
+                                        <td>${{ price.cost }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
+                        {% elif viewtype == "commercial" %}
+                            <script type="text/javascript">
+                                function get_quote(){
+                                    let multiplier = {{ pricemultiplier }};
+                                    let input = document.getElementById("rental_quote");
+                                    let output = document.getElementById("quote_result");
+                                    output.innerHTML = "$" + Math.round(input.value * multiplier);
+                                }
+                            </script>
+                                    <div class="row">
+                                        <div class="center-align col s12"><a class="waves-effect waves-light btn" onclick="get_quote()">Get Quote</a></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="center-align col s12">
+                                            <h6 id="quote_result"> Pick a time </h6>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <input id="rental_quote" type="number" name="rental_quote" min="1" value="1">
+                                            <label for="rental_quote">Days</label>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                        {% endif %}
                      </div>
                   </div>
                </div>
@@ -75,7 +102,7 @@
                          {% if details %}
                             {% for name, value in details.items %}
                                 <tr>
-                                    <td>{{ name }}</td>
+                                    <td><b>{{ name }}</b></td>
                                     <td>{{ value }}</td>
                                 </tr>
                             {% endfor %}

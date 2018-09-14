@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Car
 from django.db.models import Q
-
 from .CarView import PersonalCarView, CommercialCarView
+from django.contrib.sites.shortcuts import get_current_site
 
 # Create your views here.
 def index(request):
@@ -69,7 +69,7 @@ def search_view(request, viewtype):
          "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
                  (car.make_name.title(), car.model.title(), car.series, car.series_year, car.body_type.lower(), car.drive.lower()
                   , car.seating_capacity, car.power, car.engine_size),
-         "link": "cars/%i"%car.id}
+         "link": "%s/%i"%(viewtype,car.id)}
         for car in query_set
         #isn´t it more efficient to do this in the index.html since there is already a for loop?
         ]
@@ -77,6 +77,7 @@ def search_view(request, viewtype):
 
     return render(request, "Home/index.html", {
         "appname": "ICJK Car Rentals",
+        "homelink": get_current_site(request).domain,
         "query": query,
         "viewtype": viewtype,
         "min_seats": min_seats,
@@ -94,5 +95,8 @@ def personal(request):
 def commercial(request):
     return search_view(request, "commercial")
 
-def carview(request, db_id):
+def personalCarView(request, db_id):
     return PersonalCarView(db_id).render(request)
+
+def commercialCarView(request, db_id):
+    return CommercialCarView(db_id).render(request)
