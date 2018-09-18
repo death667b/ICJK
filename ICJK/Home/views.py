@@ -4,13 +4,13 @@ from .models import Car
 from django.db.models import Q
 from .CarView import PersonalCarView, CommercialCarView
 from django.contrib.sites.shortcuts import get_current_site
+import json
 
 # Create your views here.
 def index(request):
     return redirect("/personal")
 
-def search_view(request, viewtype):
-
+def get_search_results(request, viewtype):
     query = request.GET.get('query', None)
     min_seats = request.GET.get('min_seats', None)
     min_price = request.GET.get('min_price', None)
@@ -44,23 +44,18 @@ def search_view(request, viewtype):
             db_query &= (Q(price_new__lt = max_new_price))
 
     #make_name filter
-    model_query = Q()
-    make_name_set = Car.objects.filter(model_query).values_list('make_name').distinct()
+    make_name_set = Car.objects.values_list('make_name').distinct().filter(~Q(make_name__icontains="null"))
     if make is not None:
         db_query &= Q(make_name = make)
-        model_query &= Q(make_name = make)
 
-    #model filter
-    model_set = Car.objects.filter(model_query).values_list('model').distinct()
-    if model_name is not None:
-        db_query &= Q(model = model_name)
-        model_query &= Q(model = model_name)
-
-    #year filter
-    year_set = Car.objects.filter(model_query).values_list('series_year').distinct()
-    if year is not None:
-        db_query &= Q(series_year = year)
-        model_query &= Q(series_year = year)
+    makes_models_years_set = {}
+    for make in make_name_set:
+        model_name_set = Car.objects.filter(make_name__icontains=make[0]).values_list('model').distinct()
+        models_years = {}
+        for model in model_name_set:
+            years_set = Car.objects.filter(Q(make_name__icontains=make[0]) & Q(model__icontains=model[0])).values_list('series_year').distinct()
+            models_years[model[0]] = [year[0] for year in years_set]            
+        makes_models_years_set[make[0]] = models_years
 
     #commercial / personal filter
     if viewtype == "commercial":
@@ -77,23 +72,21 @@ def search_view(request, viewtype):
                   , car.seating_capacity, car.power, car.engine_size),
          "link": "%s/%i"%(viewtype,car.id)}
         for car in query_set
-        #isn´t it more efficient to do this in the index.html since there is already a for loop?
         ]
-
-
-    return render(request, "Home/index.html", {
+    return {
         "appname": "ICJK Car Rentals",
         "homelink": get_current_site(request).domain,
         "query": query,
         "viewtype": viewtype,
         "min_seats": min_seats,
-        "makelist" : make_name_set,
-        "modellist" : model_set,
-        "yearlist" : year_set,
+        "makes_models_years_set" : json.dumps(makes_models_years_set),
         "min_price": min_price,
         "max_price": max_price,
         "carlist": query_result,
-    })
+    }
+
+def search_view(request, viewtype):
+    return render(request, "Home/index.html", get_search_results(request, viewtype))
 
 def personal(request):
     return search_view(request, "personal")

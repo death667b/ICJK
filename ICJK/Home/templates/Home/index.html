@@ -62,42 +62,27 @@
                                 </div>
                             </div>
                             <!-- make model year filter -->
-                            {% if makelist %}
+                            
                             <div class="input-field col s12 m4">
-                            <select name="make" id="make">
+                            <select name="make" id="make" onchange="onMakeChanged()">
                                     <option value = "" disabled selected>Select make</option>
-                                    {% for make in makelist %}
-                                        <option value = "{{make.0}}">{{make.0}}</option>
-                                    {% endfor %}
                             </select>
                             <label for="make">make</label>
                             </div>
-                            {% endif %}
 
-                            {% if modellist %}
                             <div class="input-field col s12 m4">
-                            <select name="model" id="model">
+                            <select name="model" id="model" onchange="onModelChanged()">
                                     <option value = "" disabled selected>Select model</option>
-                                    {% for model in modellist %}
-                                        <option value = "{{model.0}}">{{model.0}}</option>
-                                    {% endfor %}
                             </select>
                             <label for="model">model</label>
                             </div>
-                            {% endif %}
 
-                            {% if yearlist %}
                             <div class="input-field col s12 m4">
-                            <select name="year" id="year">
-                                    <option value = "" disabled selected>Select year</option>
-                                    {% for year in yearlist %}
-                                        <option value = "{{year.0}}">{{year.0}}</option>
-                                    {% endfor %}
+                            <select name="year" id="year" onchange="onYearChanged()">
+                                <option value = "" disabled selected>Select year</option>
                             </select>
                             <label for="year">year</label>
                             </div>
-                            {% endif %}
-
 
                             <button class="btn waves-effect waves-light" type="submit" name="action" value="submit">Go
                                 <i class="material-icons right">send</i>
@@ -141,5 +126,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="{% static 'Home/index.js' %}"></script>
 
+    <script type="text/javascript">
+        let selections = {{makes_models_years_set|safe}};
+
+        let makeSelection = document.getElementById('make');
+        let makeSelectionMat;
+
+        let modelSelection = document.getElementById('model');
+        let modelSelectionMat;
+
+        let yearSelection = document.getElementById('year');
+        let yearSelectionMat;
+
+        document.addEventListener('DOMContentLoaded', ()=>{
+            
+            for(let make of Object.keys(selections)){
+                makeSelection.innerHTML +=  "<option value ='" + make + "'>" + make + "</option>";
+            }
+            M.FormSelect.init(makeSelection, null);
+            M.FormSelect.init(modelSelection, null);
+            M.FormSelect.init(yearSelection, null);
+        }, false);
+
+        function populateModels(makeName){
+            for(let model of Object.keys(selections[makeName])){
+                modelSelection.innerHTML +=  "<option value ='" + model + "'>" + model + "</option>";
+            }
+            M.FormSelect.init(modelSelection, null);
+           // $(modelSelection).formSelect();
+        }
+
+        function populateYears(makeName, modelName){
+            for(let year in selections[makeName][modelName]){
+                modelSelection.innerHTML +=  "<option value ='" + year + "'>" + year + "</option>";
+            }
+            M.FormSelect.init(yearSelection, null);
+           // $(yearSelection).formSelect();
+        }
+
+        function clearModels(){
+            modelSelection.innerHTML = '<option value = "" disabled selected>Select model</option>'
+           // $(modelSelection).formSelect();
+        }
+
+        function clearYears(){
+            yearSelection.innerHTML = '<option value = "" disabled selected>Select year</option>'
+            //$(yearSelection).formSelect();
+        }
+
+        function onMakeChanged(){
+            clearModels();
+            clearYears();
+            populateModels(makeSelection.options[makeSelection.selectedIndex].value);
+        }
+
+        function onModelChanged(){
+            clearYears();
+            populateYears(makeSelection.options[makeSelection.selectedIndex].value, modelSelection.options[modelSelection.selectedIndex].value);
+        }
+    </script>
 
 </body></html>
