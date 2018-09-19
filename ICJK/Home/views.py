@@ -24,7 +24,6 @@ def get_search_results(request, viewtype):
     db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
     if query is not None and query is not '':
         query_words = query.split()
-        print(query_words)
         for word in query_words:
             db_query &= Q(Q(make_name__icontains=word) | Q(model__icontains=word))
 

@@ -5,6 +5,8 @@ import random
 from .models import Car
 from .CarView import CarView, PersonalCarView, CommercialCarView
 from django.http import Http404, HttpRequest
+from .views import get_search_results
+import re
 
 
 # Create your tests here.
@@ -125,4 +127,51 @@ class CarViewTestCases(TestCase):
             d = random.randint(1,100)
             view = CarView(random_car.id)
             self.assertEqual(view.get_rental_price_for_days(d), int((random_car.price_new * d)/500))
+
+class FilterTestCases(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = RequestFactory()
+
+    def get_random_car(self):
+        cars = Car.objects.all()
+        num_results = cars.count()
+        return cars[random.randint(0,num_results-1)]
+
+    def test_text_filter(self): 
+        for i in range(1,10):
+            car = self.get_random_car();
+            request = self.factory.get('/personal',{'query':car.make_name})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                self.assertEqual(car.make_name.lower() in car_result["name"].lower(), True)
+    
+    def test_capacity_filter(self):
+        m = re.compile('\w+\/([0-9]+)')
+        for i in range(1,10):
+            request = self.factory.get('/personal',{'min_seats':i})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(car_in_db.seating_capacity >= i, True)
+    
+    def test_price_filter(self):
+        m = re.compile('\w+\/([0-9]+)')
+        for i in range(1,10):
+            min = random.randint(1,200)
+            max = min + random.randint(100,200)
+            request = self.factory.get('/personal',{'min_price':min, 'max_price':max})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_view = CarView(car_id)
+                self.assertEqual(car_view.get_rental_price_for_days(1) >= min, True)
+                self.assertEqual(car_view.get_rental_price_for_days(1) <= max, True)
+    
+    def test_make_model_year_filter(self):
+        pass
+
+    def test_luggage_capacity_filter(self):
+        pass
 
