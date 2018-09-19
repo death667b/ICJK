@@ -18,6 +18,7 @@ def get_search_results(request, viewtype):
     make = request.GET.get('make', None)
     model_name = request.GET.get('model', None)
     year = request.GET.get('year', None)
+    capacity = request.GET.get('capacity',None)
 
 
     query_result = []
@@ -53,6 +54,19 @@ def get_search_results(request, viewtype):
     if year is not None:
         db_query &=Q(series_year__iexact = year)
 
+    if capacity is not None:
+        capacity_restriction = Q()
+        if capacity == 'small':
+            for type in ['hardback','hardtop','convertible','roadster','cabriolet']:
+                capacity_restriction |= Q(body_type__icontains=type)
+        elif capacity == 'medium':
+            for type in ['wagon','sedan','coupe','hatchback']:
+                capacity_restriction |= Q(body_type__icontains=type)
+        elif capacity == 'large':
+            for type in ['van']:
+                capacity_restriction |= Q(body_type__icontains=type)
+        db_query &= capacity_restriction
+
     makes_models_years_set = {}
     for make in make_name_set:
         model_name_set = Car.objects.filter(make_name__iexact=make[0]).values_list('model').distinct()
@@ -64,9 +78,9 @@ def get_search_results(request, viewtype):
 
     #commercial / personal filter
     if viewtype == "commercial":
-        db_query &= Q(model__icontains="VAN")
+        db_query &= Q(body_type__icontains="van")
     elif viewtype == "personal":
-        db_query &= ~Q(model__icontains="VAN")
+        db_query &= ~Q(body_type__icontains="van")
 
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
@@ -84,6 +98,7 @@ def get_search_results(request, viewtype):
         "query": query,
         "viewtype": viewtype,
         "min_seats": min_seats,
+        "capacity": capacity,
         "makes_models_years_set" : json.dumps(makes_models_years_set),
         "min_price": min_price,
         "max_price": max_price,

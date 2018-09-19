@@ -170,8 +170,59 @@ class FilterTestCases(TestCase):
                 self.assertEqual(car_view.get_rental_price_for_days(1) <= max, True)
     
     def test_make_model_year_filter(self):
-        pass
+        m = re.compile('\w+\/([0-9]+)')
+        for i in range(1,10):
+            car = self.get_random_car();
+            make = car.make_name
+            model = car.model
+            year = car.series_year
+
+            request = self.factory.get('/personal',{'make':make})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(car_in_db.make_name.lower(), make.lower())
+
+            request = self.factory.get('/personal',{'make':make,'model':model})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(car_in_db.make_name.lower(), make.lower())
+                self.assertEqual(car_in_db.model.lower(), model.lower())
+
+            request = self.factory.get('/personal',{'make':make,'model':model,'year':year})
+            result = get_search_results(request, 'personal')
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(car_in_db.make_name.lower(), make.lower())
+                self.assertEqual(car_in_db.model.lower(), model.lower())
+                self.assertEqual(car_in_db.series_year, year)
+            
 
     def test_luggage_capacity_filter(self):
-        pass
+        m = re.compile('\w+\/([0-9]+)')
+        request = self.factory.get('/personal',{'capacity':'small'})
+        result = get_search_results(request, 'personal')
+        for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['hardback','hardtop','convertible','roadster','cabriolet']), True)
+
+        request = self.factory.get('/personal',{'capacity':'medium'})
+        result = get_search_results(request, 'personal')
+        for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['wagon','sedan','coupe','hatchback']), True)
+
+        request = self.factory.get('/personal',{'capacity':'large'})
+        result = get_search_results(request, 'personal')
+        for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                car_in_db = Car.objects.filter(id=car_id)[0]
+                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['van']), True)
+
 

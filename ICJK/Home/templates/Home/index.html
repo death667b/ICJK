@@ -63,6 +63,35 @@
                                         <label for="min_seats">Minimal passenger capacity</label>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col m3 s12">
+                                        <span>Luggage Capacity</span>
+                                    </div>
+                                    <div class="col m2 s12">
+                                        <label>
+                                            <input name="capacity" type="radio" value='any' {% if capacity == None or capacity == 'any' %} checked {% endif %} />
+                                            <span>Any</span>
+                                        </label>
+                                    </div>
+                                    <div class="col m2 s12">
+                                        <label>
+                                            <input name="capacity" type="radio" value='small'  {% if capacity and capacity == 'small' %} checked {% endif %}  />
+                                            <span>Small</span>
+                                        </label>
+                                    </div>
+                                    <div class="col m2 s12">
+                                        <label>
+                                            <input name="capacity" type="radio" value='medium' {% if capacity and capacity == 'medium' %} checked {% endif %}  />
+                                            <span>Medium</span>
+                                        </label>
+                                    </div>
+                                    <div class="col m2 s12">
+                                        <label>
+                                            <input name="capacity" type="radio" value='large' {% if capacity and capacity == 'large' %} checked {% endif %}  />
+                                            <span>Large</span>
+                                        </label>
+                                    </div>
+                                </div>
                                 <!-- price filter -->
                                 <div class="row">
                                     <div class="col s6">
