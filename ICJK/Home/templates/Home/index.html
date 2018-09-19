@@ -64,21 +64,21 @@
                             <!-- make model year filter -->
                             
                             <div class="input-field col s12 m4">
-                            <select name="make" id="make" onchange="onMakeChanged()">
+                            <select name="make" id="make">
                                     <option value = "" disabled selected>Select make</option>
                             </select>
                             <label for="make">make</label>
                             </div>
 
                             <div class="input-field col s12 m4">
-                            <select name="model" id="model" onchange="onModelChanged()">
+                            <select name="model" id="model">
                                     <option value = "" disabled selected>Select model</option>
                             </select>
                             <label for="model">model</label>
                             </div>
 
                             <div class="input-field col s12 m4">
-                            <select name="year" id="year" onchange="onYearChanged()">
+                            <select name="year" id="year">
                                 <option value = "" disabled selected>Select year</option>
                             </select>
                             <label for="year">year</label>
@@ -153,25 +153,25 @@
                 modelSelection.innerHTML +=  "<option value ='" + model + "'>" + model + "</option>";
             }
             M.FormSelect.init(modelSelection, null);
-           // $(modelSelection).formSelect();
         }
 
         function populateYears(makeName, modelName){
-            for(let year in selections[makeName][modelName]){
-                modelSelection.innerHTML +=  "<option value ='" + year + "'>" + year + "</option>";
+            for(let year of selections[makeName][modelName]){
+                yearSelection.innerHTML +=  "<option value ='" + year + "'>" + year + "</option>";
             }
             M.FormSelect.init(yearSelection, null);
-           // $(yearSelection).formSelect();
         }
 
         function clearModels(){
             modelSelection.innerHTML = '<option value = "" disabled selected>Select model</option>'
-           // $(modelSelection).formSelect();
+            modelSelection.selectedIndex = 0;
+            M.FormSelect.init(modelSelection, null);
         }
 
         function clearYears(){
             yearSelection.innerHTML = '<option value = "" disabled selected>Select year</option>'
-            //$(yearSelection).formSelect();
+            yearSelection.selectedIndex = 0;
+            M.FormSelect.init(yearSelection, null);
         }
 
         function onMakeChanged(){
@@ -184,6 +184,9 @@
             clearYears();
             populateYears(makeSelection.options[makeSelection.selectedIndex].value, modelSelection.options[modelSelection.selectedIndex].value);
         }
+
+        makeSelection.addEventListener('change', () => onMakeChanged())
+        modelSelection.addEventListener('change', () => onModelChanged())
     </script>
 
 </body></html>

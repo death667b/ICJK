@@ -44,16 +44,22 @@ def get_search_results(request, viewtype):
             db_query &= (Q(price_new__lt = max_new_price))
 
     #make_name filter
-    make_name_set = Car.objects.values_list('make_name').distinct().filter(~Q(make_name__icontains="null"))
+    make_name_set = Car.objects.values_list('make_name').distinct().filter(~Q(make_name__iexact="null"))
     if make is not None:
-        db_query &= Q(make_name = make)
+        db_query &= Q(make_name__iexact = make)
+
+    if model_name is not None:
+        db_query &=Q(model__iexact = model_name)
+
+    if year is not None:
+        db_query &=Q(series_year__iexact = year)
 
     makes_models_years_set = {}
     for make in make_name_set:
-        model_name_set = Car.objects.filter(make_name__icontains=make[0]).values_list('model').distinct()
+        model_name_set = Car.objects.filter(make_name__iexact=make[0]).values_list('model').distinct()
         models_years = {}
         for model in model_name_set:
-            years_set = Car.objects.filter(Q(make_name__icontains=make[0]) & Q(model__icontains=model[0])).values_list('series_year').distinct()
+            years_set = Car.objects.filter(Q(make_name__iexact=make[0]) & Q(model__iexact=model[0])).values_list('series_year').distinct()
             models_years[model[0]] = [year[0] for year in years_set]            
         makes_models_years_set[make[0]] = models_years
 
