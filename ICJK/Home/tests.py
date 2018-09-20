@@ -190,7 +190,7 @@ class FilterTestCases(TestCase):
         #self.assertEqual(len(response.context['carlist']), 1)
 
     def test_MercedesE55_211Amg(self):
-        request = self.factory.get('/personal',{'make': 'MERCEDES BENZ','model':'E55','year':'2006'})
+        request = self.factory.get('/personal',{'make': 'MERCEDES-BENZ','model':'E55','year':'2006'})
         result = get_search_results(request, 'personal')
         self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a 4d sedan rwd with 5 seats and a 350 horsepower 5L engine.', 'link': 'personal/15042'}] )
 
