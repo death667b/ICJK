@@ -87,11 +87,13 @@ def get_search_results(request, viewtype):
 
     #recomendation
     recomendationCar = query_set.order_by('price_new').first()
-    recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
-     "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
-             (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
-              , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
-     "link": "%s/%i"%(viewtype,recomendationCar.id)}
+    recomendation = None
+    if recomendationCar is not None:
+        recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
+         "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
+                 (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
+                  , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
+         "link": "%s/%i"%(viewtype,recomendationCar.id)}
 
     query_result = [
         {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
