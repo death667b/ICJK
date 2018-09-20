@@ -54,6 +54,7 @@ def get_search_results(request, viewtype):
     if year is not None:
         db_query &=Q(series_year__iexact = year)
 
+    #capacity filter
     if capacity is not None:
         capacity_restriction = Q()
         if capacity == 'small':
@@ -73,7 +74,7 @@ def get_search_results(request, viewtype):
         models_years = {}
         for model in model_name_set:
             years_set = Car.objects.filter(Q(make_name__iexact=make[0]) & Q(model__iexact=model[0])).values_list('series_year').distinct()
-            models_years[model[0]] = [year[0] for year in years_set]            
+            models_years[model[0]] = [year[0] for year in years_set]
         makes_models_years_set[make[0]] = models_years
 
     #commercial / personal filter
