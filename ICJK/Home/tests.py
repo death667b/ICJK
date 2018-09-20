@@ -11,23 +11,6 @@ import re
 
 # Create your tests here.
 
-class PersonalHomeViewTest(TestCase):
-
-    def test_no_search(self):
-        #response = self.client.get(reverse('Home'))
-
-        response = self.client.get('/personal')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "There are no cars here")
-        self.assertQuerysetEqual(response.context['carlist'], [])
-
-    def test_toyota(self):
-        response = self.client.get('/personal?query=Toyota&viewtype=personal&action=submit')
-        self.assertEqual(response.status_code, 200)
-        #change after connecting database
-        self.assertContains(response, "Toyota Yaris")
-        self.assertEqual(len(response.context['carlist']), 4)
-
 class CarViewTestCases(TestCase):
 
     def get_random_car(self):
@@ -68,7 +51,7 @@ class CarViewTestCases(TestCase):
             self.assertEqual(0,1,"'abstract' class CarView should not be able to have render() called.")
         except Http404:
             self.assertEqual(1,1)
-    
+
     def test_create_valid_personal_view(self):
         random_car = self.get_random_car()
         view = None
@@ -112,7 +95,7 @@ class CarViewTestCases(TestCase):
         except Http404:
             pass
         self.assertIsNone(view)
-    
+
     def test_render_commercial_view(self):
         factory = RequestFactory()
         random_car = self.get_random_car()
@@ -138,14 +121,15 @@ class FilterTestCases(TestCase):
         num_results = cars.count()
         return cars[random.randint(0,num_results-1)]
 
-    def test_text_filter(self): 
+
+    def test_text_filter(self):
         for i in range(1,10):
             car = self.get_random_car();
             request = self.factory.get('/personal',{'query':car.make_name})
             result = get_search_results(request, 'personal')
             for car_result in result["carlist"]:
                 self.assertEqual(car.make_name.lower() in car_result["name"].lower(), True)
-    
+
     def test_capacity_filter(self):
         m = re.compile('\w+\/([0-9]+)')
         for i in range(1,10):
@@ -155,7 +139,17 @@ class FilterTestCases(TestCase):
                 car_id = m.match(car_result["link"])[1]
                 car_in_db = Car.objects.filter(id=car_id)[0]
                 self.assertEqual(car_in_db.seating_capacity >= i, True)
-    
+
+    def test_capacity_filter_max_edge_case(self):
+        request = self.factory.get('/personal',{'min_seats': '13'})
+        result = get_search_results(request, 'personal')
+        self.assertQuerysetEqual(result["carlist"]  , [])
+
+    def test_capacity_filter_min_edge_case(self):
+        request = self.factory.get('/personal',{'min_seats':'1'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 283)
+
     def test_price_filter(self):
         m = re.compile('\w+\/([0-9]+)')
         for i in range(1,10):
@@ -168,7 +162,38 @@ class FilterTestCases(TestCase):
                 car_view = CarView(car_id)
                 self.assertEqual(car_view.get_rental_price_for_days(1) >= min, True)
                 self.assertEqual(car_view.get_rental_price_for_days(1) <= max, True)
-    
+
+    def test_price_filter_max_edge_case(self):
+        request = self.factory.get('/personal',{'min_price':'350'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 1)
+
+    def test_price_filter_max_edge_case2(self):
+        request = self.factory.get('/personal',{'max_price':'500'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 284)
+
+    def test_price_filter_min_edge_case(self):
+        request = self.factory.get('/personal',{'min_price':'1'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 284)
+
+    def test_price_filter_min_edge_case2(self):
+        request = self.factory.get('/personal',{'max_price':'1'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 0)
+
+    def test_toyota4RunnerDeluxe(self):
+        request = self.factory.get('/personal',{'make': 'TOYOTA','model':'4 RUNNER','year':'1989'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(result["carlist"], [{'name': 'Toyota 4 Runner Deluxe 4X4', 'desc': 'The Toyota 4 Runner DELUXE 4x4 made in 1989 is a 4d wagon 4wd with 5 seats and a 75 horsepower 2L engine.', 'link': 'personal/15282'}] )
+        #self.assertEqual(len(response.context['carlist']), 1)
+
+    def test_MercedesE55_211Amg(self):
+        request = self.factory.get('/personal',{'make': 'MERCEDES BENZ','model':'E55','year':'2006'})
+        result = get_search_results(request, 'personal')
+        self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a 4d sedan rwd with 5 seats and a 350 horsepower 5L engine.', 'link': 'personal/15042'}] )
+
     def test_make_model_year_filter(self):
         m = re.compile('\w+\/([0-9]+)')
         for i in range(1,10):
@@ -200,7 +225,7 @@ class FilterTestCases(TestCase):
                 self.assertEqual(car_in_db.make_name.lower(), make.lower())
                 self.assertEqual(car_in_db.model.lower(), model.lower())
                 self.assertEqual(car_in_db.series_year, year)
-            
+
 
     def test_luggage_capacity_filter(self):
         m = re.compile('\w+\/([0-9]+)')
@@ -224,5 +249,3 @@ class FilterTestCases(TestCase):
                 car_id = m.match(car_result["link"])[1]
                 car_in_db = Car.objects.filter(id=car_id)[0]
                 self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['van']), True)
-
-

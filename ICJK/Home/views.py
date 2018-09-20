@@ -85,6 +85,8 @@ def get_search_results(request, viewtype):
 
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
+
+
     #recomendation
     recomendationCar = query_set.order_by('price_new').first()
     recomendation = None
@@ -103,6 +105,7 @@ def get_search_results(request, viewtype):
          "link": "%s/%i"%(viewtype,car.id)}
         for car in query_set
         ]
+
     return {
 
         "recomendation": recomendation,
