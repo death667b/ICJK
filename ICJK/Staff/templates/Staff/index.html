@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+        <title>{{ appname }}</title>
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'Staff/index.css' %}">
+
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav class="nav-extended deep-orange accent-4">
+        <div class="nav-wrapper">
+            <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+            </ul>
+        </div>
+    </nav>
+
+    <div class="centralise">
+        <div class="row">
+            <div class="col s0 l3"></div> <!-- For positioning -->
+            <div class="col s12 l6">
+                <div class="card-panel">
+                    <h4>Staff Login</h4>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="staff_username" type="text" class="validate">
+                            <label for="first_name">Staff Username</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input id="password" type="password" class="validate">
+                            <label for="password">Password</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <a class="waves-effect waves-light btn">Login</a>
+                        </div>
+                        <div class="input-field col s6">
+                            <a class="waves-effect waves-light btn">Create Account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script src="{% static 'Staff/index.js' %}"></script>
+</body>

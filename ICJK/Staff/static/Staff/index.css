@@ -1,0 +1,15 @@
+.nav_title{
+    margin-left: 20px;
+ }
+
+ /* https://github.com/Dogfalo/materialize/issues/2700 */
+ .centralise {
+    margin: 0px;
+	padding:0px;
+	float: left;
+	width:50%;
+	position:absolute;
+	top: 50%;
+	transform: translateY(-50%) translateX(-50%);
+	left:50%;
+}
