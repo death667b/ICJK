@@ -43,7 +43,13 @@
                         <form action="/staff/create/" method="POST">
                             {% csrf_token %}
                             {{ form }}
-                            <input type="submit" value="Create Account">
+                            <ul>
+                                <li>Your password can't be too similar to your other personal information.</li>
+                                <li>Your password must contain at least 8 characters.</li>
+                                <li>Your password can't be a commonly used password.</li>
+                                <li>Your password can't be entirely numeric.</li>
+                            </ul>
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Create Account </button>
                         </form>
                     </div>
                 </div>
