@@ -26,22 +26,25 @@
         <div class="row">
             <div class="col s0 l3"></div> <!-- For positioning -->
             <div class="col s12 l6">
-                <div class="card-panel">
-                    <h4>Staff Login</h4>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input id="staff_username" type="text" class="validate">
-                            <label for="first_name">Staff Username</label>
+                <div class="card">
+                    <div class="card-content">
+                        <h4>Staff Login</h4>
+                    </div>
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab"><a href="#login">Login</a></li>
+                            <li class="tab"><a class="active" href="#create">Create</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-content grey lighten-4">
+                        <div id="login">
+                            login
                         </div>
-                        <div class="input-field col s12">
-                            <input id="password" type="password" class="validate">
-                            <label for="password">Password</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <a class="waves-effect waves-light btn">Login</a>
-                        </div>
-                        <div class="input-field col s6">
-                            <a class="waves-effect waves-light btn">Create Account</a>
+                        <div id="create">
+                            <form action="/staff/create" method="POST">
+                                {{ form }}
+                                <input type="submit" value="Create Account">
+                            </form>
                         </div>
                     </div>
                 </div>
