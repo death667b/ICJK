@@ -9,6 +9,9 @@ from .AuthResult import AUTH_RESULT
 
 
 # Create your views here.
+def priority_purchase_view(request):
+    return render(request, "Staff/priority_purchase.html")
+
 def login_view(request):
     createform = StaffAccountCreationForm()
     authform = AuthenticationForm()
