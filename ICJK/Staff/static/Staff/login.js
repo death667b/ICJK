@@ -6,6 +6,23 @@ $(document).ready(function(){
   location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){params[k]=v});
 //
 
+  let view = 0
+  if(params['view'] != undefined){
+    let view_args = parseInt(params['view']);
+    if(view_args == 0){
+      view = 0;
+    }else{
+      view = 1;
+    } 
+  }
+
+  if(view == 0){
+    M.Tabs.getInstance(document.getElementById("login")).select();
+  }else{
+    M.Tabs.getInstance(document.getElementById("create")).select();
+  }
+
+
   if(params['result'] != undefined){
     let result = parseInt(params['result']);
     switch(result){
@@ -24,8 +41,17 @@ $(document).ready(function(){
       case 4: // Existing email
         M.toast({html: 'Your account creation failed because you used an email address that already exists. Please try again.'});
       break;
-      default: // Unknown error
+      case 5:
         M.toast({html: 'Your account creation failed because of an unknown error. Please try again.'});
+      break;
+      case 6:
+        M.toast({html: 'Your login failed because of an invalid email and password combination. Please try again.'});
+      break;
+      case 7:
+        M.toast({html: 'Your login failed because of an unknown error. Please try again.'});
+      break;
+      default: // Unknown error
+        M.toast({html: 'An unknown error has occurred. Please try again.'});
       break;
     }
   }

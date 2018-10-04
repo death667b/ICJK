@@ -37,19 +37,23 @@
                 </div>
                 <div class="card-content grey lighten-4">
                     <div id="login">
-                        login
+                        <form action="/staff/auth/" method="POST">
+                            {% csrf_token %}
+                            {{ authform }}
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
+                        </form>
                     </div>
                     <div id="create">
                         <form action="/staff/create/" method="POST">
                             {% csrf_token %}
-                            {{ form }}
+                            {{ createform }}
                             <ul>
                                 <li>Your password can't be too similar to your other personal information.</li>
                                 <li>Your password must contain at least 8 characters.</li>
                                 <li>Your password can't be a commonly used password.</li>
                                 <li>Your password can't be entirely numeric.</li>
                             </ul>
-                            <button class="btn waves-effect waves-light" type="submit" name="action">Create Account </button>
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Create Account</button>
                         </form>
                     </div>
                 </div>
