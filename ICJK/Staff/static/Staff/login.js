@@ -1,12 +1,12 @@
 $(document).ready(function(){
-  $('ul.tabs').tabs();
+  
 
 // from https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js
   let params={};
   location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){params[k]=v});
 //
 
-  let view = 0
+  let view = 0;
   if(params['view'] != undefined){
     let view_args = parseInt(params['view']);
     if(view_args == 0){
@@ -16,12 +16,14 @@ $(document).ready(function(){
     } 
   }
 
+  let elem = document.querySelector('.tabs');
+  let options = {}
+  let tabs = M.Tabs.init(elem, options);
   if(view == 0){
-    M.Tabs.getInstance(document.getElementById("login")).select();
+    tabs.select('login');
   }else{
-    M.Tabs.getInstance(document.getElementById("create")).select();
+    tabs.select('create');
   }
-
 
   if(params['result'] != undefined){
     let result = parseInt(params['result']);
