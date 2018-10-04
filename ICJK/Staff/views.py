@@ -26,7 +26,8 @@ def auth(request):
     if request.method == 'POST':
         authform = AuthenticationForm(data=request.POST)
         if authform.is_valid():
-            return log_in_and_send_to_landing(request, authform)
+            user = authform.get_user()
+            return log_in_and_send_to_landing(request, user)
         else:
             return redirect(reverse('login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_INVALID_COMBINATION.value)
     else:
@@ -36,14 +37,13 @@ def create(request):
     if request.method == 'POST':
         form = StaffAccountCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return log_in_and_send_to_landing(request, form)
+            user = form.save()
+            return log_in_and_send_to_landing(request, user)
         else:
             error = form.previous_error
             return redirect(reverse('login') + '/?result=%i&view=1'%error.value)
 
-def log_in_and_send_to_landing(request, form):
-    user = form.get_user()
+def log_in_and_send_to_landing(request, user):
     login(request, user)
 
     return redirect("landing")
