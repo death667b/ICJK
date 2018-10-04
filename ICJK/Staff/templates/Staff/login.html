@@ -37,14 +37,14 @@
                 </div>
                 <div class="card-content grey lighten-4">
                     <div id="login">
-                        <form action="/staff/auth/" method="POST">
+                        <form action="{% url 'auth' %}" method="POST">
                             {% csrf_token %}
                             {{ authform }}
                             <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
                         </form>
                     </div>
                     <div id="create">
-                        <form action="/staff/create/" method="POST">
+                        <form action="{% url 'create' %}" method="POST">
                             {% csrf_token %}
                             {{ createform }}
                             <ul>

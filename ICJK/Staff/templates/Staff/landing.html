@@ -1,0 +1,8 @@
+<html>
+    <body>
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button class="btn waves-effect waves-light" type="submit" name="action">Logout</button>
+        </form>
+    </body>
+</html>
