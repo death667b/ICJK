@@ -23,7 +23,10 @@ def login_view(request):
 
 @login_required(login_url='login')
 def landing_view(request):
-    return render(request, "Staff/landing.html")
+    return render(request, "Staff/landing.html", {
+        "applink": "http://" + get_current_site(request).domain + "/",
+        "appname": "ICJK Car Rentals"
+    })
 
 def auth(request):
     if request.method == 'POST':
@@ -48,11 +51,16 @@ def create(request):
 
 def log_in_and_send_to_next(request, user):
     login(request, user)
-    if(request.POST.next is not None):
+    if(request.POST.get("next", None) is not None):
         return redirect(request.POST.next)
     return redirect("landing")
 
 def logout_view(request):
-    if request.method == "POST":
+    try:
         logout(request)
-    return redirect(reverse('login'))
+    except Exception:
+        pass
+    finally:
+        return redirect(reverse('login'))
+    
+    
