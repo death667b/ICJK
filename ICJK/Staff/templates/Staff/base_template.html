@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+        <title>{{ appname }}</title>
+
+        {% block stylesheet %}
+        {% endblock %}
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav class="nav-extended deep-orange accent-4">
+        <div class="nav-wrapper">
+            <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                
+                <!-- When you make a new staff page, add a link to it here so it is put on all of the other staff pages' navigation bars -->                
+                <li><a href="#">Add</a></li>
+                <li><a href="#">your</a></li>
+                <li><a href="#">pages</a></li>
+                <li><a href="#">here</a></li>
+
+
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    {% block page_content %}
+    {% endblock %}
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    {% block javascript %}
+    {% endblock %}
+</body>

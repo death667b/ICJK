@@ -1,6 +1,6 @@
 admin password is icjkifb299
 
-## To install Mysql (for mac at least)
+## To install Mysql
 1. Download MySQL from orcale
 https://dev.mysql.com/downloads/mysql/
 

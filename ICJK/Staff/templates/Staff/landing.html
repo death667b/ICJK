@@ -1,8 +1,14 @@
-<html>
-    <body>
-        <form action="{% url 'logout' %}" method="POST">
-            {% csrf_token %}
-            <button class="btn waves-effect waves-light" type="submit" name="action">Logout</button>
-        </form>
-    </body>
-</html>
+{% extends "Staff/base_template.html" %}
+
+{% block stylesheet %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'Staff/index.css' %}">
+{% endblock %}
+
+{% block page_content %}
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'Staff/landing.js' %}"></script>
+{% endblock %}
