@@ -5,7 +5,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from .StaffAccountCreationForm import StaffAccountCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from .AuthResult import AUTH_RESULT
+
 
 
 # Create your views here.
@@ -19,6 +21,7 @@ def login_view(request):
         "appname": "ICJK Car Rentals"
     })
 
+@login_required(login_url='login')
 def landing_view(request):
     return render(request, "Staff/landing.html")
 
@@ -27,7 +30,7 @@ def auth(request):
         authform = AuthenticationForm(data=request.POST)
         if authform.is_valid():
             user = authform.get_user()
-            return log_in_and_send_to_landing(request, user)
+            return log_in_and_send_to_next(request, user)
         else:
             return redirect(reverse('login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_INVALID_COMBINATION.value)
     else:
@@ -38,14 +41,15 @@ def create(request):
         form = StaffAccountCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return log_in_and_send_to_landing(request, user)
+            return log_in_and_send_to_next(request, user)
         else:
             error = form.previous_error
             return redirect(reverse('login') + '/?result=%i&view=1'%error.value)
 
-def log_in_and_send_to_landing(request, user):
+def log_in_and_send_to_next(request, user):
     login(request, user)
-
+    if(request.POST.next is not None):
+        return redirect(request.POST.next)
     return redirect("landing")
 
 def logout_view(request):
