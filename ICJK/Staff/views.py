@@ -7,12 +7,67 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .AuthResult import AUTH_RESULT
+from django.db.models import Q, Max
+from Home.models import Car, Order, Store
+
+
 
 
 
 # Create your views here.
+@login_required(login_url='login')
 def priority_purchase_view(request):
-    return render(request, "Staff/priority_purchase.html")
+
+    #get value for store
+    store = request.GET.get('store', None)
+
+    #init db_query and query result
+    query_result = []
+    db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
+
+    # get orders for selected store
+    # car could also be somewhere else; annotate doesn´t work
+    orders = Order.objects.values("fk_car_id", "fk_return_store_id").annotate(Max('return_date')).filter(fk_return_store_id = store)
+
+    # filter for cars which have been ordered in selected store
+    db_query_help = Q()
+    for order in orders:
+        db_query_help |= Q(id = order['fk_car_id'])
+
+    db_query &= db_query_help
+    query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
+
+    #build result
+    for car in query_set:
+        timeStore = 0
+        time = 0
+        ord = Order.objects.filter(fk_car_id = car.id)
+        for o in ord:
+            time += (o.return_date - o.pickup_date).days
+            if str(o.fk_pickup_store_id.id) == store or str(o.fk_return_store_id.id) == store:
+                timeStore += (o.return_date - o.pickup_date).days
+
+        query_result.append(
+        {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
+         "total": "Rented for %i days in total."%(time),
+         "store": "Rented for %i days in selected store."%(timeStore),
+         "orders": "Was ordered %i time(s)."%(len(ord)),
+         "avg": "The average renting time is %i days." %(time/len(ord)),
+         "profit": "The total profit is %i$."%((time*(car.price_new/500)-car.price_new)),
+         # "link": "%s/%i"%(viewtype,car.id)
+         # "link": "todo"
+         })
+
+    #select storelist for dropdown
+    storelist = Store.objects.all().order_by("name")
+
+    return render(request, "Staff/priority_purchase.html", {
+        "appname": "ICJK Car Rentals - Priority Purchase Report",
+        "applink": "http://" + get_current_site(request).domain + "/",
+        "carlist": query_result,
+        "storelist": storelist,
+        "store": store,
+    })
 
 def login_view(request):
     createform = StaffAccountCreationForm()

@@ -18,9 +18,9 @@
             <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                
-                <!-- When you make a new staff page, add a link to it here so it is put on all of the other staff pages' navigation bars -->                
-                <li><a href="#">Add</a></li>
+
+                <!-- When you make a new staff page, add a link to it here so it is put on all of the other staff pages' navigation bars -->
+                <li><a href="/staff/priority">Priority Purchase Report</a></li>
                 <li><a href="#">your</a></li>
                 <li><a href="#">pages</a></li>
                 <li><a href="#">here</a></li>
@@ -31,8 +31,8 @@
         </div>
     </nav>
     {% block page_content %}
+
     {% endblock %}
-    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     {% block javascript %}
