@@ -16,14 +16,14 @@ class StaffAccountCreationForm(forms.Form):
     def clean_email(self):
         user_email = self.cleaned_data.get('email').lower()
         r = User.objects.filter(email=user_email)
-        if r.count() is not 0:
+        if r.count() > 0:
             self.previous_error = AUTH_RESULT.SIGNUP_EMAIL_IN_USE
             raise forms.ValidationError(
                 "Email account exists"
             )
 
-        m = re.findall('([\w\.\-_]+)?\w+@icjk.com.au',user_email)
-        if m is None or len(m) is not 1:
+        m = re.findall('[\w\.\-_]+?\w+@icjk.com.au',user_email)
+        if len(m) == 0:
             self.previous_error = AUTH_RESULT.SIGNUP_INVALID_EMAIL
             raise forms.ValidationError(
                 "Email validation error"
@@ -40,10 +40,27 @@ class StaffAccountCreationForm(forms.Form):
             raise ValidationError(
                 "Invalid password or confirmation"
             )
-        
+
         if len(password) < 8:
             self.previous_error = AUTH_RESULT.SIGNUP_INVALID_PASSWORD
+            raise ValidationError(
+                "Password is less than 8 characters"
+            )
 
+        m = re.findall('([a-zA-Z])+', password)
+        if len(m) == 0:
+            self.previous_error = AUTH_RESULT.SIGNUP_INVALID_PASSWORD
+            raise ValidationError(
+                "Password is entirely numeric characters"
+            )
+        
+        m = re.findall('([0-9])+', password)
+        if len(m) == 0:
+            self.previous_error = AUTH_RESULT.SIGNUP_INVALID_PASSWORD
+            raise ValidationError(
+                "Password is entirely alphabet characters"
+            )
+        
         if password != password_confirm:
             self.previous_error = AUTH_RESULT.SIGNUP_INVALID_CONFIRMATION
             raise ValidationError(
@@ -52,6 +69,22 @@ class StaffAccountCreationForm(forms.Form):
 
 
         return password_confirm
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        user_email = cleaned_data.get('email')
+        
+        if password and user_email:
+            password = password.lower()
+            user_email = user_email.lower()
+            email_prefix = re.findall('([\w\.\-_]+?\w+)@icjk.com.au', user_email)
+            if len(email_prefix) > 0 and password == email_prefix[0]:
+                self.previous_error = AUTH_RESULT.SIGNUP_INVALID_PASSWORD
+                raise ValidationError(
+                    "Password is too similar to email address"
+                )
+
 
     def save(self, commit=True):
         user = User.objects.create_user(

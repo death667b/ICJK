@@ -101,23 +101,14 @@ class StaffAccountCreationFormTests(TestCase):
         self.assertEqual(res, False)
         self.assertEqual(form.previous_error, AUTH_RESULT.SIGNUP_EMAIL_IN_USE)
 
-    def test_invalid_email(self):
-        form = StaffAccountCreationForm({
-                'email':'not_an_email$icjk.com.au',
-                'password':'p45sword1235',
-                'password_confirm':'p45sword1235'
-            })
-        self.assertEqual(form.is_valid(), False)
-        self.assertEqual(form.previous_error, AUTH_RESULT.SIGNUP_INVALID_EMAIL)
-
     def test_different_password_confirmation(self):
         form = StaffAccountCreationForm({
-                'email':'staff_test@gmail.com',
+                'email':'staff_test@icjk.com.au',
                 'password':'p45sword1235',
                 'password_confirm':'password54321'
             })
         self.assertEqual(form.is_valid(), False)
-        self.assertEqual(form.previous_error, AUTH_RESULT.SIGNUP_INVALID_PASSWORD)
+        self.assertEqual(form.previous_error, AUTH_RESULT.SIGNUP_INVALID_CONFIRMATION)
 
     def test_working_combination(self):
         form = StaffAccountCreationForm({
