@@ -119,17 +119,3 @@ class StaffAccountCreationFormTests(TestCase):
         self.assertEqual(form.is_valid(), True)
         self.assertEqual(form.previous_error, AUTH_RESULT.NO_ERROR)
 
-
-class StaffLoginFormTests(TestCase):
-    def test_invalid_email(self):
-        pass
-
-    def test_unknown_email(self):
-        pass
-
-    def test_invalid_password(self):
-        pass
-
-    def test_working_combination(self):
-        pass
-
