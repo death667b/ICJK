@@ -69,6 +69,12 @@ def priority_purchase_view(request):
         "store": store,
     })
 
+def logistics_view(request):
+    return render(request, "Staff/logistics.html",{
+        "applink": "http://" + get_current_site(request).domain + "/",
+        "appname": "ICJK Car Rentals"
+    })
+
 def login_view(request):
     createform = StaffAccountCreationForm()
     authform = AuthenticationForm()
