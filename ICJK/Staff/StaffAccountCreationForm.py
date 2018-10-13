@@ -40,12 +40,16 @@ class StaffAccountCreationForm(forms.Form):
             raise ValidationError(
                 "Invalid password or confirmation"
             )
+        
+        if len(password) < 8:
+            self.previous_error = AUTH_RESULT.SIGNUP_INVALID_PASSWORD
 
         if password != password_confirm:
             self.previous_error = AUTH_RESULT.SIGNUP_INVALID_CONFIRMATION
             raise ValidationError(
                 "Passwords do not match"
             )
+
 
         return password_confirm
 
