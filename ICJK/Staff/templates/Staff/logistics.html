@@ -6,9 +6,59 @@
 {% endblock %}
 
 {% block page_content %}
+<div class='container'>
+    <div class="row">
+        <div class="col s12">
+            <div class="card white hoverable">
+                <div class="card-content black-text">
+                        <span class="card-title">Rental Trends</span>
+                    <div class="row">
+                        <div class="col s12">
+                            <span>Starting at: <a id="starting-dropdown" class='dropdown-trigger btn red' href='#' data-target='starting-location'> Anywhere </a></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <span>Finishing at: <a id="ending-dropdown" class='dropdown-trigger btn red' href='#' data-target='ending-location'> Anywhere </a></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <div class="col s12">
+                                <span>Show only contracts that have differing start and end stores: 
+                                <div class="switch right">
+                                    <label>
+                                        Show Only Different
+                                        <input id="filterToggle" type="checkbox" onclick="toggleFilter()">
+                                        <span class="lever"></span>
+                                        Show All
+                                    </label>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <ul id='starting-location' class='dropdown-content'>
+                        <li><a onclick="setStart('Anywhere')">Anywhere</a></li>
+                        {% for store in stores %}
+                        <li><a onclick="setStart('{{store.name}}')">{{store.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                    <ul id='ending-location' class='dropdown-content'>
+                        <li><a onclick="setEnd('Anywhere')">Anywhere</a></li>
+                        {% for store in stores %}
+                        <li><a onclick="setEnd('{{store.name}}')">{{store.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'Staff/landing.js' %}"></script>
+<script src="{% static 'Staff/logistics.js' %}"></script>
 {% endblock %}

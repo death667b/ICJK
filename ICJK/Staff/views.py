@@ -70,9 +70,21 @@ def priority_purchase_view(request):
     })
 
 def logistics_view(request):
+
+    # Dummy data for now
+    store_list = [
+        {
+            "name":"Store1"
+        },
+        {   
+            "name":"Store2"
+        }
+    ];
+
     return render(request, "Staff/logistics.html",{
+        "stores": store_list,
         "applink": "http://" + get_current_site(request).domain + "/",
-        "appname": "ICJK Car Rentals"
+        "appname": "ICJK Car Rentals - Logistics"
     })
 
 def login_view(request):
