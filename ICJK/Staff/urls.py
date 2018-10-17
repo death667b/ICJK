@@ -1,7 +1,7 @@
 from django.urls import include, path, re_path
 from . import views
 
-appName = "Staff"
+app_name = "Staff"
 
 urlpatterns = [
     re_path(r'^login/.*$', views.login_view, name="login"),

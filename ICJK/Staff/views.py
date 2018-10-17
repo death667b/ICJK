@@ -75,7 +75,7 @@ def logistics_view(request):
 
     return render(request, "Staff/logistics.html",{
         "stores": store_list,
-        "dyn_update_url": "http://" + get_current_site(request).domain + reverse("logistics_ajax"),
+        "dyn_update_url": "http://" + get_current_site(request).domain + reverse("Staff:logistics_ajax"),
         "applink": "http://" + get_current_site(request).domain + "/",
         "appname": "ICJK Car Rentals - Logistics"
     })
@@ -83,17 +83,40 @@ def logistics_view(request):
 @login_required(login_url='login')
 def logistics_ajax(request):
     if request.method == 'GET':
+        start = request.GET.get("start","Anywhere")
+        end = request.GET.get("end","Anywhere")
+        useFilter = False if request.GET.get("useFilter",False) in (False, 'false') else True
+        if start == end:
+            useFilter = False
+
+        db_query = Q()
+        if start != "Anywhere":
+            store = Store.objects.filter(Q(name__iexact=start))[0]
+            db_query &= Q(fk_pickup_store_id=store.id)
+            print(store.name)
+
+        if end != "Anywhere":
+            store = Store.objects.filter(Q(name__iexact=end))[0]
+            db_query &= Q(fk_return_store_id=store.id)
+            
+
+        if useFilter:
+            # Todo
+
+        results = Order.objects.filter(db_query).order_by("fk_customer_id__name").all()[:100]
+
         return JsonResponse({"orders":
             [
                 {
-                    "source":"Warranambul",
-                    "dest":"Warranambul",
-                    "purchaser":"Mr. Michael Scott",
-                    "car":"Mazda 3",
-                    "carlink":"http://www.google.com.au",
-                    "begin":"3rd Oct. 2005",
-                    "end":"4th Oct. 2005"
-                }
+                    "purchaser":"%s"%(order.fk_customer_id.name),
+                    "address":"%s"%(order.fk_customer_id.address),
+                    "begin":"%s, %s, %s"%(order.fk_pickup_store_id.address, order.fk_pickup_store_id.city, order.fk_pickup_store_id.state),
+                    "begindate":"%s"%(order.pickup_date),
+                    "end":"%s, %s, %s"%(order.fk_return_store_id.address, order.fk_return_store_id.city, order.fk_return_store_id.state),
+                    "enddate":"%s"%(order.return_date),
+                    "car":"%s %s %s %s"%(order.fk_car_id.series_year,order.fk_car_id.make_name, order.fk_car_id.model, order.fk_car_id.series),
+                    "carlink": "http://" + get_current_site(request).domain + reverse("Home:personal", kwargs={'db_id':order.fk_car_id.id})
+                } for order in results
             ]
         }, safe=False)
 
@@ -122,9 +145,9 @@ def auth(request):
             user = authform.get_user()
             return log_in_and_send_to_next(request, user)
         else:
-            return redirect(reverse('login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_INVALID_COMBINATION.value)
+            return redirect(reverse('Staff:login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_INVALID_COMBINATION.value)
     else:
-        return redirect(reverse('login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_OTHER.value)
+        return redirect(reverse('Staff:login') + '/?result=%i&view=0'%AUTH_RESULT.LOGIN_OTHER.value)
 
 def create(request):
     if request.method == 'POST':
@@ -134,7 +157,7 @@ def create(request):
             return log_in_and_send_to_next(request, user)
         else:
             error = form.previous_error
-            return redirect(reverse('login') + '/?result=%i&view=1'%error.value)
+            return redirect(reverse('Staff:login') + '/?result=%i&view=1'%error.value)
 
 def log_in_and_send_to_next(request, user):
     login(request, user)
@@ -148,4 +171,4 @@ def logout_view(request):
     except Exception:
         pass
     finally:
-        return redirect(reverse('login'))
+        return redirect(reverse('Staff:login'))
