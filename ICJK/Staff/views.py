@@ -101,7 +101,7 @@ def logistics_ajax(request):
             
 
         if useFilter:
-            # Todo
+            pass # Todo
 
         results = Order.objects.filter(db_query).order_by("fk_customer_id__name").all()[:100]
 
