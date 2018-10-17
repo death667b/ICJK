@@ -10,10 +10,6 @@ from .AuthResult import AUTH_RESULT
 from django.db.models import Q, Max
 from Home.models import Car, Order, Store
 
-
-
-
-
 # Create your views here.
 @login_required(login_url='login')
 def priority_purchase_view(request):
@@ -69,23 +65,38 @@ def priority_purchase_view(request):
         "store": store,
     })
 
+@login_required(login_url='login')
 def logistics_view(request):
-
-    # Dummy data for now
     store_list = [
-        {
-            "name":"Store1"
-        },
-        {   
-            "name":"Store2"
-        }
-    ];
+        store.name for store in Store.objects.filter(~Q(name__icontains="null"))
+    ]
+
+    store_list = sorted(store_list)
 
     return render(request, "Staff/logistics.html",{
         "stores": store_list,
+        "dyn_update_url": "http://" + get_current_site(request).domain + reverse("logistics_ajax"),
         "applink": "http://" + get_current_site(request).domain + "/",
         "appname": "ICJK Car Rentals - Logistics"
     })
+
+@login_required(login_url='login')
+def logistics_ajax(request):
+    if request.method == 'GET':
+        return JsonResponse({"orders":
+            [
+                {
+                    "source":"Warranambul",
+                    "dest":"Warranambul",
+                    "purchaser":"Mr. Michael Scott",
+                    "car":"Mazda 3",
+                    "carlink":"http://www.google.com.au",
+                    "begin":"3rd Oct. 2005",
+                    "end":"4th Oct. 2005"
+                }
+            ]
+        }, safe=False)
+
 
 def login_view(request):
     createform = StaffAccountCreationForm()

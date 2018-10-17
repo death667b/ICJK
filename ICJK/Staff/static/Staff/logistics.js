@@ -4,6 +4,8 @@ let startLocation = "Anywhere";
 let endLocation = "Anywhere";
 let useFilter = false;
 
+let loadingBox;
+
 $(document).ready(()=>{
     $('.dropdown-trigger').dropdown();
     startingDropdown = document.getElementById("starting-dropdown");
@@ -12,6 +14,9 @@ $(document).ready(()=>{
     endingDropdown.innerHTML = endLocation;
     filterToggle = document.getElementById("filterToggle");
     filterToggle.checked = useFilter;
+
+
+    updateGraph();
 })
 
 function setStart(location){
@@ -39,6 +44,7 @@ function setEnd(location){
 function toggleFilter(){
     let state = filterToggle.checked;
     useFilter = state;
+    updateGraph();
 }
 
 function toggleToggle(enabled){
@@ -50,11 +56,14 @@ function toggleToggle(enabled){
     }
 }
 
-function updateGraph(){
-    //Todo:
-    // Send request to server with start and end locations, and whether to filter start and ending locations
-    // Server sends top 100 results
-    // Display on frontend
-    // ...
-    // Profit?
+function addResult(order){
+
+}
+
+function clearResults(){
+
+}
+
+function setLoading(enabled){
+
 }

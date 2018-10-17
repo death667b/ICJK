@@ -41,13 +41,13 @@
                     <ul id='starting-location' class='dropdown-content'>
                         <li><a onclick="setStart('Anywhere')">Anywhere</a></li>
                         {% for store in stores %}
-                        <li><a onclick="setStart('{{store.name}}')">{{store.name}}</a></li>
+                        <li><a onclick="setStart('{{store}}')">{{store}}</a></li>
                         {% endfor %}
                     </ul>
                     <ul id='ending-location' class='dropdown-content'>
                         <li><a onclick="setEnd('Anywhere')">Anywhere</a></li>
                         {% for store in stores %}
-                        <li><a onclick="setEnd('{{store.name}}')">{{store.name}}</a></li>
+                        <li><a onclick="setEnd('{{store}}')">{{store}}</a></li>
                         {% endfor %}
                     </ul>
 
@@ -60,5 +60,19 @@
 {% endblock %}
 
 {% block javascript %}
+<script type="text/javascript">
+    function updateGraph(){
+        let url = "{{dyn_update_url}}";
+        clearResults();
+        setLoading(true);
+        $.get(url, {start:startLocation, end:endLocation, useFilter:useFilter},(response)=> {
+            setLoading(false);
+            for(order of response.orders){
+                addResult(order);
+            }
+        });
+    }
+
+</script>
 <script src="{% static 'Staff/logistics.js' %}"></script>
 {% endblock %}
