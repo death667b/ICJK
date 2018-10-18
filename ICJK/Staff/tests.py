@@ -119,3 +119,6 @@ class StaffAccountCreationFormTests(TestCase):
         self.assertEqual(form.is_valid(), True)
         self.assertEqual(form.previous_error, AUTH_RESULT.NO_ERROR)
 
+# class priority_purchase_view_test(TestCase):
+#
+#     def test_store_filter(self):

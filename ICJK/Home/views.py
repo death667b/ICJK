@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Car
-from django.db.models import Q
+from .models import Car, Order, Store
+from django.db.models import Q, Max
 from .CarView import PersonalCarView, CommercialCarView
 from django.contrib.sites.shortcuts import get_current_site
 import json
@@ -19,6 +19,7 @@ def get_search_results(request, viewtype):
     model_name = request.GET.get('model', None)
     year = request.GET.get('year', None)
     capacity = request.GET.get('capacity',None)
+    store = request.GET.get('store', None)
 
 
     query_result = []
@@ -27,6 +28,17 @@ def get_search_results(request, viewtype):
         query_words = query.split()
         for word in query_words:
             db_query &= Q(Q(make_name__icontains=word) | Q(model__icontains=word))
+
+    #store availability filter
+    # get orders for selected store
+    # car could also be somewhere else; annotate doesn´t work
+    orders = Order.objects.values("fk_car_id", "fk_return_store_id").annotate(Max('return_date')).filter(fk_return_store_id = store)
+
+    # filter for cars which have been ordered in selected store
+    db_query_help = Q()
+    for order in orders:
+        db_query_help |= Q(id = order['fk_car_id'])
+    db_query &= db_query_help
 
     #passenger Count filter
     if min_seats is not None:
@@ -85,17 +97,16 @@ def get_search_results(request, viewtype):
 
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
-
-
     #recomendation
-    recomendationCar = query_set.order_by('price_new').first()
     recomendation = None
-    if recomendationCar is not None:
-        recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
-         "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
-                 (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
-                  , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
-         "link": "%s/%i"%(viewtype,recomendationCar.id)}
+    if len(query_set) > 1:
+        recomendationCar = query_set.order_by('price_new').first()
+        if recomendationCar is not None:
+            recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
+             "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
+                     (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
+                      , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
+             "link": "%s/%i"%(viewtype,recomendationCar.id)}
 
     query_result = [
         {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
@@ -105,6 +116,8 @@ def get_search_results(request, viewtype):
          "link": "%s/%i"%(viewtype,car.id)}
         for car in query_set
         ]
+
+    storelist = Store.objects.all().order_by("name")
 
     return {
 
@@ -119,6 +132,8 @@ def get_search_results(request, viewtype):
         "min_price": min_price,
         "max_price": max_price,
         "carlist": query_result,
+        "storelist": storelist,
+        "store": store,
     }
 
 def search_view(request, viewtype):

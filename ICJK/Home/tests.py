@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls import reverse
 import random
-from .models import Car
+from .models import Car, Order, Store
 from .CarView import CarView, PersonalCarView, CommercialCarView
 from django.http import Http404, HttpRequest
 from .views import get_search_results
@@ -115,137 +115,153 @@ class FilterTestCases(TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.factory = RequestFactory()
+    #
+    # def get_random_car(self):
+    #     cars = Car.objects.all()
+    #     num_results = cars.count()
+    #     return cars[random.randint(0,num_results-1)]
+    #
+    #
+    # def test_text_filter(self):
+    #     for i in range(1,10):
+    #         car = self.get_random_car();
+    #         request = self.factory.get('/personal',{'query':car.make_name})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             self.assertEqual(car.make_name.lower() in car_result["name"].lower(), True)
+    #
+    # def test_capacity_filter(self):
+    #     m = re.compile('\w+\/([0-9]+)')
+    #     for i in range(1,10):
+    #         request = self.factory.get('/personal',{'min_seats':i})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(car_in_db.seating_capacity >= i, True)
+    #
+    # def test_capacity_filter_max_edge_case(self):
+    #     request = self.factory.get('/personal',{'min_seats': '13'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertQuerysetEqual(result["carlist"]  , [])
+    #
+    # def test_capacity_filter_min_edge_case(self):
+    #     request = self.factory.get('/personal',{'min_seats':'1'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"])  , 283)
+    #
+    # def test_price_filter(self):
+    #     m = re.compile('\w+\/([0-9]+)')
+    #     for i in range(1,10):
+    #         min = random.randint(1,200)
+    #         max = min + random.randint(100,200)
+    #         request = self.factory.get('/personal',{'min_price':min, 'max_price':max})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_view = CarView(car_id)
+    #             self.assertEqual(car_view.get_rental_price_for_days(1) >= min, True)
+    #             self.assertEqual(car_view.get_rental_price_for_days(1) <= max, True)
+    #
+    # def test_price_filter_max_edge_case(self):
+    #     request = self.factory.get('/personal',{'min_price':'350'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"])  , 1)
+    #
+    # def test_price_filter_max_edge_case2(self):
+    #     request = self.factory.get('/personal',{'max_price':'500'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"])  , 284)
+    #
+    # def test_price_filter_min_edge_case(self):
+    #     request = self.factory.get('/personal',{'min_price':'1'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"])  , 284)
+    #
+    # def test_price_filter_min_edge_case2(self):
+    #     request = self.factory.get('/personal',{'max_price':'1'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"])  , 0)
+    #
+    # def test_toyota4RunnerDeluxe(self):
+    #     request = self.factory.get('/personal',{'make': 'TOYOTA','model':'4 RUNNER','year':'1989'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(result["carlist"], [{'name': 'Toyota 4 Runner Deluxe 4X4', 'desc': 'The Toyota 4 Runner DELUXE 4x4 made in 1989 is a 4d wagon 4wd with 5 seats and a 75 horsepower 2L engine.', 'link': 'personal/15282'}] )
+    #     #self.assertEqual(len(response.context['carlist']), 1)
+    #
+    # def test_MercedesE55_211Amg(self):
+    #     request = self.factory.get('/personal',{'make': 'MERCEDES-BENZ','model':'E55','year':'2006'})
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a 4d sedan rwd with 5 seats and a 350 horsepower 5L engine.', 'link': 'personal/15042'}] )
+    #
+    # def test_make_model_year_filter(self):
+    #     m = re.compile('\w+\/([0-9]+)')
+    #     for i in range(1,10):
+    #         car = self.get_random_car();
+    #         make = car.make_name
+    #         model = car.model
+    #         year = car.series_year
+    #
+    #         request = self.factory.get('/personal',{'make':make})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(car_in_db.make_name.lower(), make.lower())
+    #
+    #         request = self.factory.get('/personal',{'make':make,'model':model})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(car_in_db.make_name.lower(), make.lower())
+    #             self.assertEqual(car_in_db.model.lower(), model.lower())
+    #
+    #         request = self.factory.get('/personal',{'make':make,'model':model,'year':year})
+    #         result = get_search_results(request, 'personal')
+    #         for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(car_in_db.make_name.lower(), make.lower())
+    #             self.assertEqual(car_in_db.model.lower(), model.lower())
+    #             self.assertEqual(car_in_db.series_year, year)
+    #
+    #
+    # def test_luggage_capacity_filter(self):
+    #     m = re.compile('\w+\/([0-9]+)')
+    #     request = self.factory.get('/personal',{'capacity':'small'})
+    #     result = get_search_results(request, 'personal')
+    #     for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['hardback','hardtop','convertible','roadster','cabriolet']), True)
+    #
+    #     request = self.factory.get('/personal',{'capacity':'medium'})
+    #     result = get_search_results(request, 'personal')
+    #     for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['wagon','sedan','coupe','hatchback']), True)
+    #
+    #     request = self.factory.get('/personal',{'capacity':'large'})
+    #     result = get_search_results(request, 'personal')
+    #     for car_result in result["carlist"]:
+    #             car_id = m.match(car_result["link"])[1]
+    #             car_in_db = Car.objects.filter(id=car_id)[0]
+    #             self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['van']), True)
 
-    def get_random_car(self):
-        cars = Car.objects.all()
-        num_results = cars.count()
-        return cars[random.randint(0,num_results-1)]
-
-
-    def test_text_filter(self):
-        for i in range(1,10):
-            car = self.get_random_car();
-            request = self.factory.get('/personal',{'query':car.make_name})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                self.assertEqual(car.make_name.lower() in car_result["name"].lower(), True)
-
-    def test_capacity_filter(self):
+    def test_store_filter(self):
         m = re.compile('\w+\/([0-9]+)')
-        for i in range(1,10):
-            request = self.factory.get('/personal',{'min_seats':i})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(car_in_db.seating_capacity >= i, True)
-
-    def test_capacity_filter_max_edge_case(self):
-        request = self.factory.get('/personal',{'min_seats': '13'})
+        request = self.factory.get('/personal',{'store':'32'})
         result = get_search_results(request, 'personal')
-        self.assertQuerysetEqual(result["carlist"]  , [])
-
-    def test_capacity_filter_min_edge_case(self):
-        request = self.factory.get('/personal',{'min_seats':'1'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(len(result["carlist"])  , 283)
-
-    def test_price_filter(self):
-        m = re.compile('\w+\/([0-9]+)')
-        for i in range(1,10):
-            min = random.randint(1,200)
-            max = min + random.randint(100,200)
-            request = self.factory.get('/personal',{'min_price':min, 'max_price':max})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_view = CarView(car_id)
-                self.assertEqual(car_view.get_rental_price_for_days(1) >= min, True)
-                self.assertEqual(car_view.get_rental_price_for_days(1) <= max, True)
-
-    def test_price_filter_max_edge_case(self):
-        request = self.factory.get('/personal',{'min_price':'350'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(len(result["carlist"])  , 1)
-
-    def test_price_filter_max_edge_case2(self):
-        request = self.factory.get('/personal',{'max_price':'500'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(len(result["carlist"])  , 284)
-
-    def test_price_filter_min_edge_case(self):
-        request = self.factory.get('/personal',{'min_price':'1'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(len(result["carlist"])  , 284)
-
-    def test_price_filter_min_edge_case2(self):
-        request = self.factory.get('/personal',{'max_price':'1'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(len(result["carlist"])  , 0)
-
-    def test_toyota4RunnerDeluxe(self):
-        request = self.factory.get('/personal',{'make': 'TOYOTA','model':'4 RUNNER','year':'1989'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(result["carlist"], [{'name': 'Toyota 4 Runner Deluxe 4X4', 'desc': 'The Toyota 4 Runner DELUXE 4x4 made in 1989 is a 4d wagon 4wd with 5 seats and a 75 horsepower 2L engine.', 'link': 'personal/15282'}] )
-        #self.assertEqual(len(response.context['carlist']), 1)
-
-    def test_MercedesE55_211Amg(self):
-        request = self.factory.get('/personal',{'make': 'MERCEDES-BENZ','model':'E55','year':'2006'})
-        result = get_search_results(request, 'personal')
-        self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a 4d sedan rwd with 5 seats and a 350 horsepower 5L engine.', 'link': 'personal/15042'}] )
-
-    def test_make_model_year_filter(self):
-        m = re.compile('\w+\/([0-9]+)')
-        for i in range(1,10):
-            car = self.get_random_car();
-            make = car.make_name
-            model = car.model
-            year = car.series_year
-
-            request = self.factory.get('/personal',{'make':make})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(car_in_db.make_name.lower(), make.lower())
-
-            request = self.factory.get('/personal',{'make':make,'model':model})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(car_in_db.make_name.lower(), make.lower())
-                self.assertEqual(car_in_db.model.lower(), model.lower())
-
-            request = self.factory.get('/personal',{'make':make,'model':model,'year':year})
-            result = get_search_results(request, 'personal')
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(car_in_db.make_name.lower(), make.lower())
-                self.assertEqual(car_in_db.model.lower(), model.lower())
-                self.assertEqual(car_in_db.series_year, year)
-
-
-    def test_luggage_capacity_filter(self):
-        m = re.compile('\w+\/([0-9]+)')
-        request = self.factory.get('/personal',{'capacity':'small'})
-        result = get_search_results(request, 'personal')
+        self.assertEqual(len(result["carlist"])  , 4)
         for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['hardback','hardtop','convertible','roadster','cabriolet']), True)
+            car_id = m.match(car_result["link"])[1]
+            last_order = Order.objects.filter(fk_car_id=car_id).order_by('-return_date').first()
 
-        request = self.factory.get('/personal',{'capacity':'medium'})
-        result = get_search_results(request, 'personal')
-        for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['wagon','sedan','coupe','hatchback']), True)
+            o = Order.objects.filter(fk_car_id=car_id).order_by('-return_date')
+            for ord in o:
+                print(str(ord.fk_return_store_id.id)+ " " + str(ord.return_date))
 
-        request = self.factory.get('/personal',{'capacity':'large'})
-        result = get_search_results(request, 'personal')
-        for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
-                car_in_db = Car.objects.filter(id=car_id)[0]
-                self.assertEqual(any(type in car_in_db.body_type.lower() for type in ['van']), True)
+            last_store_id = last_order.fk_return_store_id.id
+            self.assertEqual(last_store_id, 32)
