@@ -58,10 +58,21 @@
                             <div id="filters" style="display:none">
                                 <!-- store availability filter -->
                                 <div class="row">
-                                    <div class="col s12">
+                                    <div class="col s6">
                                         <label for="store">Select Pick-Up Store</label>
                                         <select name="store" id="store">
                                             <option value = "" disabled selected>Select store</option>
+                                            {% if storelist %}
+                                                {% for store in storelist  %}
+                                                <option value="{{store.id}}">{{store.name}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <div class="col s6">
+                                        <label for="store">Select Profession</label>
+                                        <select name="profession" id="profession">
+                                            <option value = "" disabled selected>Select Profession</option>
                                             {% if storelist %}
                                                 {% for store in storelist  %}
                                                 <option value="{{store.id}}">{{store.name}}</option>
