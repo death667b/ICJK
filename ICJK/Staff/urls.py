@@ -1,7 +1,7 @@
 from django.urls import include, path, re_path
 from . import views
 
-appName = "Staff"
+app_name = "Staff"
 
 urlpatterns = [
     re_path(r'^login/.*$', views.login_view, name="login"),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('landing/', views.landing_view, name="landing"),
     path('priority/', views.priority_purchase_view, name="priority"),
-    path('logistics/', views.logistics_view, name="logistics")
+    path('logistics/', views.logistics_view, name="logistics"),
+    path('logistics_ajax/', views.logistics_ajax, name="logistics_ajax")
 ]
