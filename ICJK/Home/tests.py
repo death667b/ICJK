@@ -258,5 +258,10 @@ class FilterTestCases(TestCase):
         for car_result in result["carlist"]:
             car_id = m.match(car_result["link"])[1]
             last_order = Order.objects.filter(fk_car_id=car_id).order_by('-return_date').first()
+
+            o = Order.objects.filter(fk_car_id=car_id).order_by('-return_date')
+            for ord in o:
+                print(str(ord.fk_return_store_id.id)+ " " + str(ord.return_date))
+
             last_store_id = last_order.fk_return_store_id.id
             self.assertEqual(last_store_id, 32)

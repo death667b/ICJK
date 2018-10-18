@@ -59,6 +59,7 @@
                                 <!-- store availability filter -->
                                 <div class="row">
                                     <div class="col s12">
+                                        <label for="store">Select Pick-Up Store</label>
                                         <select name="store" id="store">
                                             <option value = "" disabled selected>Select store</option>
                                             {% if storelist %}
@@ -67,14 +68,13 @@
                                                 {% endfor %}
                                             {% endif %}
                                         </select>
-                                        <label for="store">Select Pick-Up Store</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col s12">
+                                        <label for="min_seats">Minimal passenger capacity</label>
                                         <input name="viewtype" type="hidden" value="{{viewtype}}">
                                         <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
-                                        <label for="min_seats">Minimal passenger capacity</label>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -109,12 +109,12 @@
                                 <!-- price filter -->
                                 <div class="row">
                                     <div class="col s6">
-                                        <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
                                         <label for="min_price">Minimal Price</label>
+                                        <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
                                     </div>
                                     <div class="col s6">
-                                        <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
                                         <label for="max_price">Maximal Price</label>
+                                        <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
                                     </div>
                                 </div>
                                 <!-- make model year filter -->
