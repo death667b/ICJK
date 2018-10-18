@@ -37,7 +37,7 @@
                 </div>
                 <div class="card-content grey lighten-4">
                     <div id="login">
-                        <form action="{% url 'auth' %}" method="POST">
+                        <form action="{% url 'Staff:auth' %}" method="POST">
                             {% csrf_token %}
                             {{ authform }}
                             {% if request.GET.next %}
@@ -47,7 +47,7 @@
                         </form>
                     </div>
                     <div id="create">
-                        <form action="{% url 'create' %}" method="POST">
+                        <form action="{% url 'Staff:create' %}" method="POST">
                             {% csrf_token %}
                             {{ createform }}
                             <ul>

@@ -11,7 +11,7 @@ from django.db.models import Q, Max
 from Home.models import Car, Order, Store
 
 # Create your views here.
-@login_required(login_url='login')
+@login_required(login_url='Staff:login')
 def priority_purchase_view(request):
 
     #get value for store
@@ -65,7 +65,7 @@ def priority_purchase_view(request):
         "store": store,
     })
 
-@login_required(login_url='login')
+@login_required(login_url='Staff:login')
 def logistics_view(request):
     store_list = [
         store.name for store in Store.objects.filter(~Q(name__icontains="null"))
@@ -80,7 +80,7 @@ def logistics_view(request):
         "appname": "ICJK Car Rentals - Logistics"
     })
 
-@login_required(login_url='login')
+@login_required(login_url='Staff:login')
 def logistics_ajax(request):
     if request.method == 'GET':
         start = request.GET.get("start","Anywhere")
@@ -131,7 +131,7 @@ def login_view(request):
         "appname": "ICJK Car Rentals"
     })
 
-@login_required(login_url='login')
+@login_required(login_url='Staff:login')
 def landing_view(request):
     return render(request, "Staff/landing.html", {
         "applink": "http://" + get_current_site(request).domain + "/",
@@ -163,7 +163,7 @@ def log_in_and_send_to_next(request, user):
     login(request, user)
     if(request.POST.get("next", None) is not None):
         return redirect(request.POST.next)
-    return redirect("landing")
+    return redirect("Staff:landing")
 
 def logout_view(request):
     try:
@@ -172,3 +172,9 @@ def logout_view(request):
         pass
     finally:
         return redirect(reverse('Staff:login'))
+
+def geo_view(request):
+    return render(request, "Staff/geo.html",{
+        "applink": "http://" + get_current_site(request).domain + "/",
+        "appname": "ICJK Car Rentals"
+    })

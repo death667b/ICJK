@@ -35,3 +35,10 @@
       opacity: 0;
     }
   }
+  .leaflet-container {  /* all maps */
+    width:  600px;
+    height: 400px;
+    'DEFAULT_ZOOM': 16;
+    'MIN_ZOOM': 3;
+    'MAX_ZOOM': 18;
+}

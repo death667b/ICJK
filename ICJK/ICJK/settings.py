@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Home.apps.HomeConfig',
-    'Staff.apps.StaffConfig'
+    'Staff.apps.StaffConfig',
+    'leaflet'
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LEAFLET_CONFIG ={
+    'SPATIAL_EXTENT': (5.0, 44.0, 7.5, 46),
+    'DEFAULT_CENTER': (6.0, 45.0),
+    'DEFAULT_ZOOM': 1,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+    'SCALE': 'both'
+
+}

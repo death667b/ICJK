@@ -1,0 +1,18 @@
+{% extends "Staff/base_template.html" %}
+
+{% block stylesheet %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'Staff/index.css' %}">
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'Staff/geo.js' %}"></script>
+{% endblock %}
+
+{% block page_content %}
+{% load leaflet_tags %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+
+    {% leaflet_map "yourmap"%}
+{% endblock %}
