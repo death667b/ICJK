@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .AuthResult import AUTH_RESULT
 from django.db.models import Q, Max
 from Home.models import Car, Order, Store
+from Home.views import get_latest_order_for_car
 
 # Create your views here.
 @login_required(login_url='login')
@@ -23,14 +24,17 @@ def priority_purchase_view(request):
 
     # get orders for selected store
     # car could also be somewhere else; annotate doesn´t work
-    orders = Order.objects.values("fk_car_id", "fk_return_store_id").annotate(Max('return_date')).filter(fk_return_store_id = store)
-
-    # filter for cars which have been ordered in selected store
+    # get orders for selected store
     db_query_help = Q()
-    for order in orders:
-        db_query_help |= Q(id = order['fk_car_id'])
-
+    orders = Order.objects.filter(fk_return_store_id = store)
+    # filter for cars which have been ordered in selected store
+    for ord in orders:
+        if str(get_latest_order_for_car(ord.fk_car_id).fk_return_store_id.id) == str(store):
+            #add cars which last location was store to query
+            db_query_help |= Q(id = ord.fk_car_id.id)
+    #add help query to main query
     db_query &= db_query_help
+
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
 
     #build result
@@ -98,7 +102,7 @@ def logistics_ajax(request):
         if end != "Anywhere":
             store = Store.objects.filter(Q(name__iexact=end))[0]
             db_query &= Q(fk_return_store_id=store.id)
-            
+
 
         if useFilter:
             pass # Todo

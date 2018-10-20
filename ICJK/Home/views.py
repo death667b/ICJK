@@ -10,6 +10,10 @@ import json
 def index(request):
     return redirect("/personal")
 
+def get_latest_order_for_car(car):
+    return Order.objects.filter(fk_car_id=car.id).order_by('-return_date').first()
+
+
 def get_search_results(request, viewtype):
     query = request.GET.get('query', None)
     min_seats = request.GET.get('min_seats', None)
@@ -31,13 +35,14 @@ def get_search_results(request, viewtype):
 
     #store availability filter
     # get orders for selected store
-    # car could also be somewhere else; annotate doesn´t work
-    orders = Order.objects.values("fk_car_id", "fk_return_store_id").annotate(Max('return_date')).filter(fk_return_store_id = store)
-
-    # filter for cars which have been ordered in selected store
     db_query_help = Q()
-    for order in orders:
-        db_query_help |= Q(id = order['fk_car_id'])
+    orders = Order.objects.filter(fk_return_store_id = store)
+    # filter for cars which have been ordered in selected store
+    for ord in orders:
+        if str(get_latest_order_for_car(ord.fk_car_id).fk_return_store_id.id) == str(store):
+            #add cars which last location was store to query
+            db_query_help |= Q(id = ord.fk_car_id.id)
+    #add help query to main query
     db_query &= db_query_help
 
     #passenger Count filter

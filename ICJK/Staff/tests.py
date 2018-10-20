@@ -4,7 +4,11 @@ from django.test.client import RequestFactory
 from django.http import Http404, HttpRequest
 from django.forms import ValidationError
 from .AuthResult import AUTH_RESULT
+from Home.models import Order, Store
+import re
 from django.contrib.auth.models import User
+from .views import priority_purchase_view
+
 # Create your tests here.
 
 class StaffAccountCreationFormTests(TestCase):
@@ -119,6 +123,23 @@ class StaffAccountCreationFormTests(TestCase):
         self.assertEqual(form.is_valid(), True)
         self.assertEqual(form.previous_error, AUTH_RESULT.NO_ERROR)
 
-# class priority_purchase_view_test(TestCase):
-#
-#     def test_store_filter(self):
+class priority_purchase_view_test(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = RequestFactory()
+
+    def test_store_filter(self):
+        print("test priority_purchase")
+        m = re.compile('\w+\/([0-9]+)')
+        for store in Store.objects.all():
+            request = self.factory.get('/priority',{'store': str(store.id)})
+            result = priority_purchase_view(request)
+            #self.assertEqual(len(result["carlist"])  , 2)
+            for car_result in result["carlist"]:
+                car_id = m.match(car_result["link"])[1]
+                last_order = Order.objects.filter(fk_car_id=car_id).order_by('-return_date').first()
+
+                o = Order.objects.filter(fk_car_id=car_id).order_by('-return_date')
+                for ord in o:
+                    last_store_id = last_order.fk_return_store_id.id
+                    self.assertEqual(last_store_id, store.id)
