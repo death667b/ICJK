@@ -100,6 +100,7 @@ def get_orders_from_store(start, end, filter_same):
     if filter_same:
         db_query &= ~Q(fk_pickup_store_id=F('fk_return_store_id'))
         
+    db_query &= ~Q(Q(fk_car_id__make_name__icontains="null") | Q(fk_car_id__model__icontains="null"))
 
     return Order.objects.filter(db_query).order_by("fk_customer_id__name").all()[:100]
 
@@ -109,8 +110,6 @@ def logistics_ajax(request):
         start = request.GET.get("start","Anywhere")
         end = request.GET.get("end","Anywhere")
         useFilter = False if request.GET.get("useFilter",False) in (False, 'false') else True
-
-        print("start:%s end:%s useFilter:%s"%(start, end, useFilter))
 
         results = get_orders_from_store(start, end, useFilter)
 
