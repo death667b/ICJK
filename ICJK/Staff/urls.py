@@ -11,5 +11,6 @@ urlpatterns = [
     path('landing/', views.landing_view, name="landing"),
     path('priority/', views.priority_purchase_view, name="priority"),
     path('logistics/', views.logistics_view, name="logistics"),
-    path('logistics_ajax/', views.logistics_ajax, name="logistics_ajax")
+    path('logistics_ajax/', views.logistics_ajax, name="logistics_ajax"),
+    path('geo/',views.geo_view, name="geo")
 ]
