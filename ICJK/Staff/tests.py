@@ -7,7 +7,8 @@ from .AuthResult import AUTH_RESULT
 from Home.models import Order, Store
 import re
 from django.contrib.auth.models import User
-from .views import priority_purchase_view
+from .views import priority_purchase_view, get_orders_from_store
+import random
 
 # Create your tests here.
 
@@ -122,6 +123,50 @@ class StaffAccountCreationFormTests(TestCase):
             })
         self.assertEqual(form.is_valid(), True)
         self.assertEqual(form.previous_error, AUTH_RESULT.NO_ERROR)
+
+class LogisticsViewTests(TestCase):
+    def get_random_store(self):
+        stores = Store.objects.all()
+        num_results = stores.count()
+        return stores[random.randint(0,num_results-1)]
+    
+    def test_different_stores_filter_off(self):
+        for i in range(1,20):
+            store_start = self.get_random_store()
+            store_end = None
+            while True:
+                store_end = self.get_random_store()
+                if store_end.id != store_start.id: # Ensure they are different stores
+                    break
+            orders = get_orders_from_store(store_start.name, store_end.name, False)
+            for order in orders:
+                self.assertEqual(order.fk_pickup_store_id.id, store_start.id)
+                self.assertEqual(order.fk_return_store_id.id, store_end.id)
+
+
+    def test_same_store_filter_off(self):
+        for i in range(1,20):
+            store_start = self.get_random_store()
+            store_end = store_start
+            orders = get_orders_from_store(store_start.name, store_end.name, False)
+            for order in orders:
+                self.assertEqual(order.fk_pickup_store_id.id, store_start.id)
+                self.assertEqual(order.fk_pickup_store_id.id, order.fk_return_store_id.id)
+
+    def test_different_stores_filter_on(self):
+        pass
+    
+    def test_same_store_filter_on(self):
+        pass
+
+    def test_anywhere_filter_off(self):
+        pass
+
+    def test_anywhere_filter_on(self):
+        pass
+
+
+
 
 class priority_purchase_view_test(TestCase):
     def __init__(self, *args, **kwargs):

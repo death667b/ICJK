@@ -7,7 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .AuthResult import AUTH_RESULT
-from django.db.models import Q, Max
+from django.db.models import Q, Max, F
 from Home.models import Car, Order, Store
 from Home.views import get_latest_order_for_car
 
@@ -84,30 +84,35 @@ def logistics_view(request):
         "appname": "ICJK Car Rentals - Logistics"
     })
 
+def get_orders_from_store(start, end, filter_same):
+    if start == end and start != "Anywhere":
+            filter_same = False
+
+    db_query = Q()
+    if start != "Anywhere":
+        store = Store.objects.filter(Q(name__iexact=start))[0]
+        db_query &= Q(fk_pickup_store_id=store.id)
+
+    if end != "Anywhere":
+        store = Store.objects.filter(Q(name__iexact=end))[0]
+        db_query &= Q(fk_return_store_id=store.id)
+
+    if filter_same:
+        db_query &= ~Q(fk_pickup_store_id=F('fk_return_store_id'))
+        
+
+    return Order.objects.filter(db_query).order_by("fk_customer_id__name").all()[:100]
+
 @login_required(login_url='Staff:login')
 def logistics_ajax(request):
     if request.method == 'GET':
         start = request.GET.get("start","Anywhere")
         end = request.GET.get("end","Anywhere")
         useFilter = False if request.GET.get("useFilter",False) in (False, 'false') else True
-        if start == end:
-            useFilter = False
 
-        db_query = Q()
-        if start != "Anywhere":
-            store = Store.objects.filter(Q(name__iexact=start))[0]
-            db_query &= Q(fk_pickup_store_id=store.id)
-            print(store.name)
+        print("start:%s end:%s useFilter:%s"%(start, end, useFilter))
 
-        if end != "Anywhere":
-            store = Store.objects.filter(Q(name__iexact=end))[0]
-            db_query &= Q(fk_return_store_id=store.id)
-
-
-        if useFilter:
-            pass # Todo
-
-        results = Order.objects.filter(db_query).order_by("fk_customer_id__name").all()[:100]
+        results = get_orders_from_store(start, end, useFilter)
 
         return JsonResponse({"orders":
             [
