@@ -128,7 +128,7 @@ def get_search_results(request, viewtype):
         ]
 
     storelist = Store.objects.all().order_by("name")
-    actlink = "http://127.0.0.1:8000" + request.get_full_path()
+    actlink = get_current_site(request).domain + request.get_full_path()
     profession_list = Customer.objects.order_by().values_list('occupation', flat=True).distinct()
 
     return {

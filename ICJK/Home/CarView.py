@@ -21,7 +21,7 @@ class CarView():
             "fullname": "%s %s %s"%(self.car_data.make_name.title(), self.car_data.model.title(), self.car_data.series.title()),
             "appname": "ICJK Car Rentals",
             "homelink": "http://" + get_current_site(request).domain,
-            "actlink": "http://127.0.0.1:8000" + request.get_full_path(),
+            "actlink": get_current_site(request).domain + request.get_full_path(),
         }
         model_data = model_to_dict(self.car_data)
         model_data_pretty = {}
