@@ -7,202 +7,214 @@
 
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
         <!--Import materialize.css-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-    <nav class="nav-extended pink darken-3">
-        <div class="nav-wrapper">
-            <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
-                <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <ul class="sidenav" id="mobile-demo">
-        <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
-        <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
-    </ul>
-
-    <div class='container'>
-        <div class="row">
-
-            <div class="col s12">
-
-
-                <div class="card white hoverable">
-                    <div class="card-content black-text">
-                        <form method="get">
-                            <!-- query filter -->
-                            <div class="row">
-                                <div class="input-field col s12 m10">
-                                    <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
-                                    <label for="query">Search</label>
-                                </div>
-                                <div class="col s6 m1 valign-wrapper">
-                                    <a class="btn-floating btn-medium waves-effect waves-light red" id="filter-toggle"><i class="material-icons">arrow_drop_down</i></a>
-                                </div>
-                                <div class="col s6 m1 valign-wrapper">
-                                    <button class="btn-floating btn-medium waves-effect waves-light" type="submit" name="action" value="submit">
-                                        <i class="material-icons right">send</i>
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- passenger capacity filter -->
-                            <div id="filters" style="display:none">
-                                <!-- store availability filter -->
-                                <div class="row">
-                                    <div class="col s6">
-                                        <label for="store">Select Pick-Up Store</label>
-                                        <select name="store" id="store">
-                                            <option value = "" disabled selected>Select store</option>
-                                            {% if storelist %}
-                                                {% for store in storelist  %}
-                                                <option value="{{store.id}}">{{store.name}}</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </div>
-                                    <div class="col s6">
-                                        <label for="store">Select Profession</label>
-                                        <select name="profession" id="profession">
-                                            <option value = "" disabled selected>Select Profession</option>
-                                            {% if storelist %}
-                                                {% for store in storelist  %}
-                                                <option value="{{store.id}}">{{store.name}}</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s12">
-                                        <label for="min_seats">Minimal passenger capacity</label>
-                                        <input name="viewtype" type="hidden" value="{{viewtype}}">
-                                        <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m3 s12">
-                                        <span>Luggage Capacity</span>
-                                    </div>
-                                    <div class="col m2 s12">
-                                        <label>
-                                            <input name="capacity" type="radio" value='any' {% if capacity == None or capacity == 'any' %} checked {% endif %} />
-                                            <span>Any</span>
-                                        </label>
-                                    </div>
-                                    <div class="col m2 s12">
-                                        <label>
-                                            <input name="capacity" type="radio" value='small'  {% if capacity and capacity == 'small' %} checked {% endif %}  />
-                                            <span>Small</span>
-                                        </label>
-                                    </div>
-                                    <div class="col m2 s12">
-                                        <label>
-                                            <input name="capacity" type="radio" value='medium' {% if capacity and capacity == 'medium' %} checked {% endif %}  />
-                                            <span>Medium</span>
-                                        </label>
-                                    </div>
-                                    <div class="col m2 s12">
-                                        <label>
-                                            <input name="capacity" type="radio" value='large' {% if capacity and capacity == 'large' %} checked {% endif %}  />
-                                            <span>Large</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <!-- price filter -->
-                                <div class="row">
-                                    <div class="col s6">
-                                        <label for="min_price">Minimal Price</label>
-                                        <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
-                                    </div>
-                                    <div class="col s6">
-                                        <label for="max_price">Maximal Price</label>
-                                        <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
-                                    </div>
-                                </div>
-                                <!-- make model year filter -->
-                                <div class="row">
-                                    <div class="input-field col s12 m4">
-                                    <select name="make" id="make">
-                                            <option value = "" disabled selected>Select make</option>
-                                    </select>
-                                    <label for="make">make</label>
-                                    </div>
-
-                                    <div class="input-field col s12 m4">
-                                    <select name="model" id="model">
-                                            <option value = "" disabled selected>Select model</option>
-                                    </select>
-                                    <label for="model">model</label>
-                                    </div>
-
-                                    <div class="input-field col s12 m4">
-                                    <select name="year" id="year">
-                                        <option value = "" disabled selected>Select year</option>
-                                    </select>
-                                    <label for="year">year</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<body style="display: flex; min-height: 100vh; flex-direction: column;">
+    <header>
+        <nav class="nav-extended pink darken-3">
+            <div class="nav-wrapper">
+                <a href="{{ applink }}" class="brand-logo nav_title">{{ appname }}</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
+                    <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
+                </ul>
             </div>
-            {% if recomendation is not None %}
+        </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            <li {% if viewtype == "personal" %} class='active' {% endif %}><a href="/personal">Personal</a></li>
+            <li {% if viewtype == "commercial" %} class='active' {% endif %}><a href="/commercial">Commercial</a></li>
+        </ul>
+    </header>
+    <main style="flex: 1 0 auto;">
+        <div class='container'>
+            <div class="row">
                 <div class="col s12">
                     <div class="card white hoverable">
-                        <div class="card-content pink-text">
-                            <span class="card-title">Our recommendation</span>
-                        </div>
                         <div class="card-content black-text">
-                            <span class="card-title">{{recomendation.name}}</span>
-                            <p>{{recomendation.desc}}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{{recomendation.link}}">More Details</a>
+                            <form method="get">
+                                <!-- query filter -->
+                                <div class="row">
+                                    <div class="input-field col s12 m10">
+                                        <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
+                                        <label for="query">Search</label>
+                                    </div>
+                                    <div class="col s6 m1 valign-wrapper">
+                                        <a class="btn-floating btn-medium waves-effect waves-light red" id="filter-toggle"><i class="material-icons">arrow_drop_down</i></a>
+                                    </div>
+                                    <div class="col s6 m1 valign-wrapper">
+                                        <button class="btn-floating btn-medium waves-effect waves-light" type="submit" name="action" value="submit">
+                                            <i class="material-icons right">send</i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- passenger capacity filter -->
+                                <div id="filters" style="display:none">
+                                    <!-- store availability filter -->
+                                    <div class="row">
+                                        <div class="col s6">
+                                            <label for="store">Select Pick-Up Store</label>
+                                            <select name="store" id="store">
+                                                <option value = "" disabled selected>Select store</option>
+                                                {% if storelist %}
+                                                    {% for store in storelist  %}
+                                                    <option value="{{store.id}}">{{store.name}}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <div class="col s6">
+                                            <label for="store">Select Profession</label>
+                                            <select name="profession" id="profession">
+                                                <option value = "" disabled selected>Select Profession</option>
+                                                {% if storelist %}
+                                                    {% for store in storelist  %}
+                                                    <option value="{{store.id}}">{{store.name}}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <label for="min_seats">Minimal passenger capacity</label>
+                                            <input name="viewtype" type="hidden" value="{{viewtype}}">
+                                            <input name="min_seats" type="range" id="min_seats" min="1" max="12" value="{% if min_seats %}{{min_seats}}{% else %}5{% endif %}"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col m3 s12">
+                                            <span>Luggage Capacity</span>
+                                        </div>
+                                        <div class="col m2 s12">
+                                            <label>
+                                                <input name="capacity" type="radio" value='any' {% if capacity == None or capacity == 'any' %} checked {% endif %} />
+                                                <span>Any</span>
+                                            </label>
+                                        </div>
+                                        <div class="col m2 s12">
+                                            <label>
+                                                <input name="capacity" type="radio" value='small'  {% if capacity and capacity == 'small' %} checked {% endif %}  />
+                                                <span>Small</span>
+                                            </label>
+                                        </div>
+                                        <div class="col m2 s12">
+                                            <label>
+                                                <input name="capacity" type="radio" value='medium' {% if capacity and capacity == 'medium' %} checked {% endif %}  />
+                                                <span>Medium</span>
+                                            </label>
+                                        </div>
+                                        <div class="col m2 s12">
+                                            <label>
+                                                <input name="capacity" type="radio" value='large' {% if capacity and capacity == 'large' %} checked {% endif %}  />
+                                                <span>Large</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- price filter -->
+                                    <div class="row">
+                                        <div class="col s6">
+                                            <label for="min_price">Minimal Price</label>
+                                            <input id="min_price" type="number" name="min_price" placeholder="0" value="{% if min_price %}{{min_price}}{% endif %}">
+                                        </div>
+                                        <div class="col s6">
+                                            <label for="max_price">Maximal Price</label>
+                                            <input id="max_price" type="number" name="max_price" placeholder="666" value="{% if max_price %}{{max_price}}{% endif %}">
+                                        </div>
+                                    </div>
+                                    <!-- make model year filter -->
+                                    <div class="row">
+                                        <div class="input-field col s12 m4">
+                                        <select name="make" id="make">
+                                                <option value = "" disabled selected>Select make</option>
+                                        </select>
+                                        <label for="make">make</label>
+                                        </div>
+
+                                        <div class="input-field col s12 m4">
+                                        <select name="model" id="model">
+                                                <option value = "" disabled selected>Select model</option>
+                                        </select>
+                                        <label for="model">model</label>
+                                        </div>
+
+                                        <div class="input-field col s12 m4">
+                                        <select name="year" id="year">
+                                            <option value = "" disabled selected>Select year</option>
+                                        </select>
+                                        <label for="year">year</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            {% endif %}
 
-
-        {% if carlist %}
-            {% for car in carlist %}
-                <div class="col s12 m6">
-                    <div class="card small white hoverable">
-                        <div class="card-content black-text">
-                            <span class="card-title">{{car.name}}</span>
-                            <p>{{car.desc}}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{{car.link}}">More Details</a>
+                {% if recomendation is not None %}
+                    <div class="col s12">
+                        <div class="card white hoverable">
+                            <div class="card-content pink-text">
+                                <span class="card-title">Our recommendation</span>
+                            </div>
+                            <div class="card-content black-text">
+                                <span class="card-title">{{recomendation.name}}</span>
+                                <p>{{recomendation.desc}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="{{recomendation.link}}">More Details</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        {% else %}
+                {% endif %}
 
-        <div class="col s12">
-            <div class="card white">
-                <div class="card-content black-text">
-                    <span class="card-title center">There are no cars here <i class="material-icons center">error_outline</i></span>
-                    <p class="center">Try altering your search critera to be more general</p>
+            {% if carlist %}
+                {% for car in carlist %}
+                    <div class="col s12 m6">
+                        <div class="card small white hoverable">
+                            <div class="card-content black-text">
+                                <span class="card-title">{{car.name}}</span>
+                                <p>{{car.desc}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="{{car.link}}">More Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+
+            <div class="col s12">
+                <div class="card white">
+                    <div class="card-content black-text">
+                        <span class="card-title center">There are no cars here <i class="material-icons center">error_outline</i></span>
+                        <p class="center">Try altering your search critera to be more general</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {% endif %}
+            {% endif %}
 
+            </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="page-footer pink darken-3 white-text">
+        <div class="container">
+            <div class="row center-align">
+                <a class="col s4 white-text" href="https://www.facebook.com/sharer/sharer.php?u={{actlink}}"><i class="fab fa-facebook fa-2x"></i></a>
+                <a class="col s4 white-text" href="https://api.whatsapp.com/send?phone=whatsappphonenumber&text=Check out this site {{actlink}}."><i class="fab fa-whatsapp fa-2x"></i></a>
+                <a class="col s4 white-text" href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site {{actlink}}."><i class="fas fa-envelope fa-2x"></i></a>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="{% static 'Home/index.js' %}"></script>

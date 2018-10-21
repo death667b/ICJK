@@ -4,6 +4,7 @@ from .models import Car, Order, Store
 from django.db.models import Q, Max
 from .CarView import PersonalCarView, CommercialCarView
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import resolve
 import json
 
 # Create your views here.
@@ -24,7 +25,7 @@ def get_search_results(request, viewtype):
     year = request.GET.get('year', None)
     capacity = request.GET.get('capacity',None)
     store = request.GET.get('store', None)
-
+    profession = request.GET.get('profession', None)
 
     query_result = []
     db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
@@ -123,6 +124,7 @@ def get_search_results(request, viewtype):
         ]
 
     storelist = Store.objects.all().order_by("name")
+    actlink = "http://127.0.0.1:8000" + request.get_full_path()
 
     return {
 
@@ -139,6 +141,7 @@ def get_search_results(request, viewtype):
         "carlist": query_result,
         "storelist": storelist,
         "store": store,
+        "actlink": actlink,
     }
 
 def search_view(request, viewtype):
