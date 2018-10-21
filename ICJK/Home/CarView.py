@@ -21,6 +21,7 @@ class CarView():
             "fullname": "%s %s %s"%(self.car_data.make_name.title(), self.car_data.model.title(), self.car_data.series.title()),
             "appname": "ICJK Car Rentals",
             "homelink": "http://" + get_current_site(request).domain,
+            "actlink": "http://127.0.0.1:8000" + request.get_full_path(),
         }
         model_data = model_to_dict(self.car_data)
         model_data_pretty = {}
@@ -32,7 +33,7 @@ class CarView():
             model_data_pretty[k.title().replace('_',' ')] = str(v).title()
         data.update({"details":model_data_pretty})
         return data
-    
+
     def get_rental_price_for_days(self, days):
         return int((self.car_data.price_new * days)/500)
 
@@ -43,7 +44,7 @@ class CarView():
 class CommercialCarView(CarView):
     def __init__(self, db_id):
         super().__init__(db_id)
-    
+
     def render(self, request):
         json_data = super().make_default_json_params(request)
         json_data["viewtype"] = "commercial"
@@ -57,7 +58,7 @@ class PersonalCarView(CarView):
     def render(self, request):
         json_data = super().make_default_json_params(request)
         json_data["viewtype"] = "personal"
-        json_data["pricelist"] = [ 
+        json_data["pricelist"] = [
             {
                 "period":"24 hours",
                 "cost":super().get_rental_price_for_days(1)

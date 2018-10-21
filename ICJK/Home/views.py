@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Car, Order, Store, Customer
+from .models import Car, Order, Store
 from django.db.models import Q, Max
 from .CarView import PersonalCarView, CommercialCarView
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import resolve
 import json
 
 # Create your views here.
 def index(request):
     return redirect("/personal")
+
+def get_latest_order_for_car(car):
+    return Order.objects.filter(fk_car_id=car.id).order_by('-return_date').first()
+
 
 def get_search_results(request, viewtype):
     query = request.GET.get('query', None)
@@ -22,7 +27,6 @@ def get_search_results(request, viewtype):
     store = request.GET.get('store', None)
     profession = request.GET.get('profession', None)
 
-
     query_result = []
     db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
     if query is not None and query is not '':
@@ -32,13 +36,14 @@ def get_search_results(request, viewtype):
 
     #store availability filter
     # get orders for selected store
-    # car could also be somewhere else; annotate doesn´t work
-    orders = Order.objects.values("fk_car_id", "fk_return_store_id").annotate(Max('return_date')).filter(fk_return_store_id = store)
-
-    # filter for cars which have been ordered in selected store
     db_query_help = Q()
-    for order in orders:
-        db_query_help |= Q(id = order['fk_car_id'])
+    orders = Order.objects.filter(fk_return_store_id = store)
+    # filter for cars which have been ordered in selected store
+    for ord in orders:
+        if str(get_latest_order_for_car(ord.fk_car_id).fk_return_store_id.id) == str(store):
+            #add cars which last location was store to query
+            db_query_help |= Q(id = ord.fk_car_id.id)
+    #add help query to main query
     db_query &= db_query_help
 
     #passenger Count filter
@@ -90,28 +95,24 @@ def get_search_results(request, viewtype):
             models_years[model[0]] = [year[0] for year in years_set]
         makes_models_years_set[make[0]] = models_years
 
-    if profession is not None:
-        if profession == 'Manager':
-            vehiclePk = [14891, 15328, 15310, 15207, 14851, 15350, 15202, 15003, 15346]
-        elif profession == 'Labour':
-            vehiclePk = [15084, 15340, 14871, 15147, 14888, 14855, 14908, 14960, 14842]
-        elif profession == 'Retiree':
-            vehiclePk = [15340, 14930, 15088, 14909, 14864, 15000, 15350, 15003, 15346]
-        elif profession == 'Nurse':
-            vehiclePk = [14914, 15325, 15029, 15369, 14815, 14895, 15340, 14929, 14837]
-        elif profession == 'Researcher':
-            vehiclePk = [14902, 14907, 14927, 15042, 15050, 14879, 15089, 15169, 15208]
-
     #commercial / personal filter
     if viewtype == "commercial":
         db_query &= Q(body_type__icontains="van")
     elif viewtype == "personal":
         db_query &= ~Q(body_type__icontains="van")
 
-    if profession is None:
-        query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
-    else:
-        query_set = Car.objects.filter(pk__in=vehiclePk).order_by('body_type','-series_year','-price_new')
+    query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
+
+    #recomendation
+    recomendation = None
+    if len(query_set) > 1:
+        recomendationCar = query_set.order_by('price_new').first()
+        if recomendationCar is not None:
+            recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
+             "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
+                     (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
+                      , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
+             "link": "%s/%i"%(viewtype,recomendationCar.id)}
 
     query_result = [
         {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
@@ -123,10 +124,11 @@ def get_search_results(request, viewtype):
         ]
 
     storelist = Store.objects.all().order_by("name")
-    profession_list = Customer.objects.order_by().values_list('occupation', flat=True).distinct()
+    actlink = "http://127.0.0.1:8000" + request.get_full_path()
 
     return {
 
+        "recomendation": recomendation,
         "appname": "ICJK Car Rentals",
         "homelink": get_current_site(request).domain,
         "query": query,
@@ -138,8 +140,8 @@ def get_search_results(request, viewtype):
         "max_price": max_price,
         "carlist": query_result,
         "storelist": storelist,
-        "profession_list": profession_list,
         "store": store,
+        "actlink": actlink,
     }
 
 def search_view(request, viewtype):
