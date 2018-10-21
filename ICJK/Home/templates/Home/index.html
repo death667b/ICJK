@@ -41,9 +41,20 @@
                             <form method="get">
                                 <!-- query filter -->
                                 <div class="row">
-                                    <div class="input-field col s12 m10">
+                                    <div class="input-field col s5">
                                         <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
                                         <label for="query">Search</label>
+                                    </div>
+                                    <div class="col s5">
+                                        <label for="store">Or just select a Profession</label>
+                                        <select name="profession" id="profession">
+                                            <option value = "" disabled selected>Select Profession</option>
+                                            {% if profession_list %}
+                                                {% for profession in profession_list  %}
+                                                <option value="{{profession}}">{{profession}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
                                     </div>
                                     <div class="col s6 m1 valign-wrapper">
                                         <a class="btn-floating btn-medium waves-effect waves-light red" id="filter-toggle"><i class="material-icons">arrow_drop_down</i></a>
