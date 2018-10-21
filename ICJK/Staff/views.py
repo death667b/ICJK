@@ -81,7 +81,7 @@ def logistics_view(request):
         "stores": store_list,
         "dyn_update_url": "http://" + get_current_site(request).domain + reverse("Staff:logistics_ajax"),
         "applink": "http://" + get_current_site(request).domain + "/",
-        "appname": "ICJK Car Rentals - Logistics"
+        "appname": "ICJK Car Rentals - Rental Trends"
     })
 
 def get_orders_from_store(start, end, filter_same):

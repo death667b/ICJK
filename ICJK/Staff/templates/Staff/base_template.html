@@ -19,23 +19,25 @@
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
 
+                {% block nav_bar_desktop %}
                 <!-- When you make a new staff page, add a link to it here so it is put on all of the other staff pages' navigation bars -->
+                <li><a href="{% url 'Staff:landing' %}">Staff Home</a></li>
                 <li><a href="{% url 'Staff:priority' %}">Priority Purchase Report</a></li>
-                <li><a href="{% url 'Staff:logistics' %}">Logistics Report</a></li>
+                <li><a href="{% url 'Staff:logistics' %}">Rental Trends</a></li>
                 <li><a href="{% url 'Staff:geo' %}">Store Map</a></li>
-                <li><a href="#">here</a></li>
-
-
+                {% endblock %}
                 <li><a href="{% url 'Staff:logout' %}">Logout</a></li>
             </ul>
         </div>
     </nav>
     <ul class="sidenav" id="mobile-demo">
             <!-- When you make a new staff page, add a link to it here so it is put on all of the other staff pages' navigation bars -->
+            {% block nav_bar_mobile %}
+            <li><a href="{% url 'Staff:landing' %}">Staff Home</a></li>
             <li><a href="{% url 'Staff:priority' %}">Priority Purchase Report</a></li>
-            <li><a href="{% url 'Staff:logistics' %}">Logistics Report</a></li>
+            <li><a href="{% url 'Staff:logistics' %}">Rental Trends</a></li>
             <li><a href="{% url 'Staff:geo' %}">Store Map</a></li>
-            <li><a href="#">here</a></li>
+            {% endblock %}
             <li><a href="{% url 'Staff:logout' %}">Logout</a></li>
     </ul>
 
