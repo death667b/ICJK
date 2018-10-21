@@ -129,7 +129,7 @@ class LogisticsViewTests(TestCase):
         stores = Store.objects.all()
         num_results = stores.count()
         return stores[random.randint(0,num_results-1)]
-    
+
     def test_different_stores_filter_off(self):
         for _ in range(1,20):
             store_start = self.get_random_store()
@@ -166,12 +166,12 @@ class LogisticsViewTests(TestCase):
                 self.assertEqual(order.fk_pickup_store_id.id, store_start.id)
                 self.assertEqual(order.fk_return_store_id.id, store_end.id)
                 self.assertNotEqual(order.fk_return_store_id.id, order.fk_pickup_store_id.id) # Must be different
-    
+
     def test_same_store_filter_on(self):
         for _ in range(1,30):
             store_start = self.get_random_store()
             store_end = store_start
-            orders = get_orders_from_store(store_start.name, store_end.name, True) 
+            orders = get_orders_from_store(store_start.name, store_end.name, True)
             # Function will detect that this is True but store start and end are the same, so to ensure we always return results, it will set to False internally
             for order in orders:
                 self.assertEqual(order.fk_pickup_store_id.id, store_start.id)
