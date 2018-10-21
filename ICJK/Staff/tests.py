@@ -7,7 +7,7 @@ from .AuthResult import AUTH_RESULT
 from Home.models import Order, Store
 import re
 from django.contrib.auth.models import User
-from .views import priority_purchase_view, get_orders_from_store
+from .views import priority_purchase_view, get_orders_from_store, get_purchase_statistics
 import random
 
 # Create your tests here.
@@ -200,14 +200,12 @@ class priority_purchase_view_test(TestCase):
         self.factory = RequestFactory()
 
     def test_store_filter(self):
-        print("test priority_purchase")
         m = re.compile('\w+\/([0-9]+)')
         for store in Store.objects.all():
-            request = self.factory.get('/priority',{'store': str(store.id)})
-            result = priority_purchase_view(request)
+            result = get_purchase_statistics(store)
             #self.assertEqual(len(result["carlist"])  , 2)
-            for car_result in result["carlist"]:
-                car_id = m.match(car_result["link"])[1]
+            for car_result in result:
+                car_id = car_result["id"]
                 last_order = Order.objects.filter(fk_car_id=car_id).order_by('-return_date').first()
 
                 o = Order.objects.filter(fk_car_id=car_id).order_by('-return_date')

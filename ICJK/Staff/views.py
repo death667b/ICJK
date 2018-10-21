@@ -11,14 +11,7 @@ from django.db.models import Q, Max, F
 from Home.models import Car, Order, Store
 from Home.views import get_latest_order_for_car
 
-# Create your views here.
-@login_required(login_url='Staff:login')
-def priority_purchase_view(request):
-
-    #get value for store
-    store = request.GET.get('store', None)
-
-    #init db_query and query result
+def get_purchase_statistics(store):
     query_result = []
     db_query = Q(~Q(make_name__icontains="null") & ~Q(model__icontains="null"))
 
@@ -48,7 +41,8 @@ def priority_purchase_view(request):
                 timeStore += (o.return_date - o.pickup_date).days
 
         query_result.append(
-        {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
+        {"id":car.id,
+         "name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
          "total": "Rented for %i days in total."%(time),
          "store": "Rented for %i days in selected store."%(timeStore),
          "orders": "Was ordered %i time(s)."%(len(ord)),
@@ -57,6 +51,17 @@ def priority_purchase_view(request):
          # "link": "%s/%i"%(viewtype,car.id)
          # "link": "todo"
          })
+    return query_result
+
+# Create your views here.
+@login_required(login_url='Staff:login')
+def priority_purchase_view(request):
+
+    #get value for store
+    store = request.GET.get('store', None)
+
+    #init db_query and query result
+    query_result = get_purchase_statistics(store)
 
     #select storelist for dropdown
     storelist = Store.objects.all().order_by("name")
@@ -181,6 +186,7 @@ def logout_view(request):
     finally:
         return redirect(reverse('Staff:login'))
 
+@login_required(login_url='Staff:login')
 def geo_view(request):
     return render(request, "Staff/geo.html",{
         "applink": "http://" + get_current_site(request).domain + "/",
