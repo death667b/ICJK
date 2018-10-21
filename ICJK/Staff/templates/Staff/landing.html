@@ -5,8 +5,28 @@
 <link rel="stylesheet" href="{% static 'Staff/index.css' %}">
 {% endblock %}
 
-{% block page_content %}
+{% block nav_bar_desktop %}
+{% endblock %}
 
+{% block nav_bar_mobile %}
+{% endblock %}
+
+{% block page_content %}
+    <div class='container'>
+
+        <div class="row">
+            <div class="col s1"></div>
+            <div class="col s10 card">
+                <ul class="collection with-header">
+                    <li class="collection-header"><h2>Staff Home</h2><p>Logged in as {{user.get_username}}</p></li>
+
+                    <li class="collection-item"><a href="{% url 'Staff:priority' %}">Priority Purchase Report</a><div class="secondary-content grey-text">View rental statistics for each car in stock.</div></li>
+                    <li class="collection-item"><a href="{% url 'Staff:logistics' %}">Rental Trends</a><div class="secondary-content grey-text">Inspect orders to find rental trends between stores.</div></li>
+                    <li class="collection-item"><a href="{% url 'Staff:geo' %}">Store Map</a><div class="secondary-content grey-text">See a map of all ICJK Car Rental stores.</div></li>
+                </ul>
+            </div> 
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascript %}
