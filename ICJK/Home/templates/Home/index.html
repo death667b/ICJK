@@ -156,37 +156,37 @@
                     </div>
                 </div>
             </div>
-            {% if recomendation is not None %}
-                <div class="col s12">
-                    <div class="card white hoverable">
-                        <div class="card-content pink-text">
-                            <span class="card-title">Our recommendation</span>
-                        </div>
-                        <div class="card-content black-text">
-                            <span class="card-title">{{recomendation.name}}</span>
-                            <p>{{recomendation.desc}}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{{recomendation.link}}">More Details</a>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
 
         {% if carlist %}
             {% for car in carlist %}
-                <div class="col s12 m6">
-                    <div class="card small white hoverable">
-                        <div class="card-content black-text">
-                            <span class="card-title">{{car.name}}</span>
-                            <p>{{car.desc}}</p>
-                        </div>
-                        <div class="card-action">
-                            <a href="{{car.link}}">More Details</a>
+                {% if forloop.first %}
+                    <div class="col s12">
+                        <div class="card white hoverable">
+                            <div class="card-content pink-text">
+                                <span class="card-title">Our recommendation</span>
+                            </div>
+                            <div class="card-content black-text">
+                                <span class="card-title">{{car.name}}</span>
+                                <p>{{car.desc}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="{{car.link}}">More Details</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="col s12 m6">
+                        <div class="card small white hoverable">
+                            <div class="card-content black-text">
+                                <span class="card-title">{{car.name}}</span>
+                                <p>{{car.desc}}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="{{car.link}}">More Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
         {% else %}
 
