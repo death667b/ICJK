@@ -89,24 +89,28 @@ def get_search_results(request, viewtype):
             models_years[model[0]] = [year[0] for year in years_set]
         makes_models_years_set[make[0]] = models_years
 
+    if profession is not None:
+        if profession == 'Manager':
+            vehiclePk = [14891, 15328, 15310, 15207, 14851, 15350, 15202, 15003, 15346]
+        elif profession == 'Labour':
+            vehiclePk = [15084, 15340, 14871, 15147, 14888, 14855, 14908, 14960, 14842]
+        elif profession == 'Retiree':
+            vehiclePk = [15340, 14930, 15088, 14909, 14864, 15000, 15350, 15003, 15346]
+        elif profession == 'Nurse':
+            vehiclePk = [14914, 15325, 15029, 15369, 14815, 14895, 15340, 14929, 14837]
+        elif profession == 'Researcher':
+            vehiclePk = [14902, 14907, 14927, 15042, 15050, 14879, 15089, 15169, 15208]
+
     #commercial / personal filter
     if viewtype == "commercial":
         db_query &= Q(body_type__icontains="van")
     elif viewtype == "personal":
         db_query &= ~Q(body_type__icontains="van")
 
+    if profession is None:
     query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
-
-    #recomendation
-    recomendation = None
-    if len(query_set) > 1:
-        recomendationCar = query_set.order_by('price_new').first()
-        if recomendationCar is not None:
-            recomendation = {"name": ("%s %s %s"%(recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series.title())),
-             "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
-                     (recomendationCar.make_name.title(), recomendationCar.model.title(), recomendationCar.series, recomendationCar.series_year, recomendationCar.body_type.lower(), recomendationCar.drive.lower()
-                      , recomendationCar.seating_capacity, recomendationCar.power, recomendationCar.engine_size),
-             "link": "%s/%i"%(viewtype,recomendationCar.id)}
+    else:
+        query_set = Car.objects.filter(pk__in=vehiclePk).order_by('body_type','-series_year','-price_new')
 
     query_result = [
         {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
