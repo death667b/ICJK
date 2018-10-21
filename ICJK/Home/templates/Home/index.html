@@ -73,9 +73,9 @@
                                         <label for="store">Select Profession</label>
                                         <select name="profession" id="profession">
                                             <option value = "" disabled selected>Select Profession</option>
-                                            {% if storelist %}
-                                                {% for store in storelist  %}
-                                                <option value="{{store.id}}">{{store.name}}</option>
+                                            {% if profession_list %}
+                                                {% for profession in profession_list  %}
+                                                <option value="{{profession}}">{{profession}}</option>
                                                 {% endfor %}
                                             {% endif %}
                                         </select>
