@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Car, Order, Store
+from .models import Car, Order, Store, Customer
 from django.db.models import Q, Max
 from .CarView import PersonalCarView, CommercialCarView
 from django.contrib.sites.shortcuts import get_current_site
@@ -20,6 +20,7 @@ def get_search_results(request, viewtype):
     year = request.GET.get('year', None)
     capacity = request.GET.get('capacity',None)
     store = request.GET.get('store', None)
+    profession = request.GET.get('profession', None)
 
 
     query_result = []
@@ -108,7 +109,7 @@ def get_search_results(request, viewtype):
         db_query &= ~Q(body_type__icontains="van")
 
     if profession is None:
-    query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
+        query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
     else:
         query_set = Car.objects.filter(pk__in=vehiclePk).order_by('body_type','-series_year','-price_new')
 
@@ -122,10 +123,10 @@ def get_search_results(request, viewtype):
         ]
 
     storelist = Store.objects.all().order_by("name")
+    profession_list = Customer.objects.order_by().values_list('occupation', flat=True).distinct()
 
     return {
 
-        "recomendation": recomendation,
         "appname": "ICJK Car Rentals",
         "homelink": get_current_site(request).domain,
         "query": query,
@@ -137,6 +138,7 @@ def get_search_results(request, viewtype):
         "max_price": max_price,
         "carlist": query_result,
         "storelist": storelist,
+        "profession_list": profession_list,
         "store": store,
     }
 
