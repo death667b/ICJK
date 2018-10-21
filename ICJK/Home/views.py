@@ -113,7 +113,7 @@ def get_search_results(request, viewtype):
         elif profession == 'Researcher':
             vehiclePk = [14902, 14907, 14927, 15042, 15050, 14879, 15089, 15169, 15208]
 
-    if profession is None:
+    if (profession is None) or (profession == 'None'):
         query_set = Car.objects.filter(db_query).order_by('make_name', 'model', 'series')
     else:
         query_set = Car.objects.filter(pk__in=vehiclePk).order_by('body_type','-series_year','-price_new')
@@ -146,6 +146,7 @@ def get_search_results(request, viewtype):
         "storelist": storelist,
         "store": store,
         "profession_list": profession_list,
+        "selected_profession": profession,
         "actlink": actlink,
     }
 
