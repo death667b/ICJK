@@ -21,7 +21,6 @@
                                         {% if store.id == selected_store %}
                                             <option value="{{store.id}}" selected>{{store.name}}</option>
                                         {% else %}
-                                            <script>console.log({{store.id}});</script>
                                             <option value="{{store.id}}">{{store.name}}</option>
                                         {% endif %}
                                       {% endfor %}
