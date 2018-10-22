@@ -18,7 +18,12 @@
                                   <option value = "" disabled selected>Select store</option>
                                   {% if storelist %}
                                       {% for store in storelist  %}
-                                      <option value="{{store.id}}">{{store.name}}</option>
+                                        {% if store.id == selected_store %}
+                                            <option value="{{store.id}}" selected>{{store.name}}</option>
+                                        {% else %}
+                                            <script>console.log({{store.id}});</script>
+                                            <option value="{{store.id}}">{{store.name}}</option>
+                                        {% endif %}
                                       {% endfor %}
                                   {% endif %}
 

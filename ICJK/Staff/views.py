@@ -71,7 +71,7 @@ def priority_purchase_view(request):
         "applink": "http://" + get_current_site(request).domain + "/",
         "carlist": query_result,
         "storelist": storelist,
-        "store": store,
+        "selected_store": int(store),
     })
 
 @login_required(login_url='Staff:login')
