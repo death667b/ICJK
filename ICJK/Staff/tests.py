@@ -202,7 +202,7 @@ class priority_purchase_view_test(TestCase):
     def test_store_filter(self):
         m = re.compile('\w+\/([0-9]+)')
         for store in Store.objects.all():
-            result = get_purchase_statistics(store)
+            result = get_purchase_statistics(store.id)
             #self.assertEqual(len(result["carlist"])  , 2)
             for car_result in result:
                 car_id = car_result["id"]
