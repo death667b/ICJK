@@ -66,12 +66,15 @@ def priority_purchase_view(request):
     #select storelist for dropdown
     storelist = Store.objects.all().order_by("name")
 
+    if (store != None):
+        store = int(store)
+
     return render(request, "Staff/priority_purchase.html", {
         "appname": "ICJK Car Rentals - Priority Purchase Report",
         "applink": "http://" + get_current_site(request).domain + "/",
         "carlist": query_result,
         "storelist": storelist,
-        "store": store,
+        "selected_store": store,
     })
 
 @login_required(login_url='Staff:login')
