@@ -276,8 +276,4 @@ class FilterTestCases(TestCase):
                     last_store_id = last_order.fk_return_store_id.id
                     self.assertEqual(last_store_id, store.id)
 
-    # def test_store_filter_specific(self):
-    #     request = self.factory.get('/personal',{'store': "29" })
-    #     result = get_search_results(request, 'personal')
-    #     self.assertEqual(len(result["carlist"]), 9)
-    #     self.assertEqual(result["carlist"][0], [{'name': 'Audi 90 Sport', 'desc': 'The Audi 90 SPORT made in 1990 is a fwd, 4d sedan with 5 seats and a 2L, 100 horsepower engine.', 'link': 'personal/15309'}] )
+    
