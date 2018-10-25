@@ -46,7 +46,7 @@
                       <input id="query" type="text" name="query" class="validate" placeholder="begin here" value="{% if query %}{{query}}{% endif %}"></input>
                       <label for="query">Search</label>
                     </div>
-                    <div class="col m5 s6">
+                    <div class="col m4 s6">
                       <label for="store">Or select Profession</label>
                       <select name="profession" id="profession">
                         <option value = "" disabled selected>Select Profession</option>
@@ -62,16 +62,16 @@
                         {% endif %}
                       </select>
                     </div>
-                    <div class="col m2 s12">
-                      <div class="col m4 s2">
+                    <div class="col m3 s12">
+                      <div class="col m4">
                         <a class="btn-floating btn-medium waves-effect waves-light red" id="filter-toggle"><i class="material-icons">arrow_drop_down</i></a>
                       </div>
-                      <div class="col m4 s2">
+                      <div class="col m4">
                         <button class="btn-floating btn-medium waves-effect waves-light" type="submit" name="action" value="submit">
                           <i class="material-icons right">send</i>
                         </button>
                       </div>
-                      <div class="col m4 s2">
+                      <div class="col m4">
                           <a href="/personal" class="btn-floating btn-medium waves-effect waves-light">
                             <i class="material-icons right">clear</i>
                           </a>
@@ -226,85 +226,14 @@
         </div>
       </div>
     </footer>
-
+    <script>
+      // Get selections from Django to window.selections
+      let selections = {{makes_models_years_set|safe}};
+    </script>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
     <script src="{% static 'Home/index.js' %}"></script>
-
-    <script type="text/javascript">
-      // should be in index.js, but isnt loading
-      $(document).ready(function() {
-        $('select').formSelect();
-      });
-
-      let selections = {{makes_models_years_set|safe}};
-
-      let makeSelection = document.getElementById('make');
-      let modelSelection = document.getElementById('model');
-      let yearSelection = document.getElementById('year');
-      let filterToggle = document.getElementById('filter-toggle');
-      let filters = document.getElementById('filters');
-
-      document.addEventListener('DOMContentLoaded', ()=>{
-
-        for(let make of Object.keys(selections)){
-          makeSelection.innerHTML +=  "<option value ='" + make + "'>" + make + "</option>";
-        }
-        M.FormSelect.init(makeSelection, null);
-        M.FormSelect.init(modelSelection, null);
-        M.FormSelect.init(yearSelection, null);
-      }, false);
-
-      function populateModels(makeName){
-        for(let model of Object.keys(selections[makeName])){
-          modelSelection.innerHTML +=  "<option value ='" + model + "'>" + model + "</option>";
-        }
-        M.FormSelect.init(modelSelection, null);
-      }
-
-      function populateYears(makeName, modelName){
-        for(let year of selections[makeName][modelName]){
-          yearSelection.innerHTML +=  "<option value ='" + year + "'>" + year + "</option>";
-        }
-        M.FormSelect.init(yearSelection, null);
-      }
-
-      function clearModels(){
-        modelSelection.innerHTML = '<option value = "" disabled selected>Select model</option>'
-        modelSelection.selectedIndex = 0;
-        M.FormSelect.init(modelSelection, null);
-      }
-
-      function clearYears(){
-        yearSelection.innerHTML = '<option value = "" disabled selected>Select year</option>'
-        yearSelection.selectedIndex = 0;
-        M.FormSelect.init(yearSelection, null);
-      }
-
-      function onMakeChanged(){
-        clearModels();
-        clearYears();
-        populateModels(makeSelection.options[makeSelection.selectedIndex].value);
-      }
-
-      function onModelChanged(){
-        clearYears();
-        populateYears(makeSelection.options[makeSelection.selectedIndex].value, modelSelection.options[modelSelection.selectedIndex].value);
-      }
-
-      function onFilterToggle(){
-        let current_state = filters.style.display == 'block';
-        filterToggle.children[0].innerHTML = current_state ? "arrow_drop_down" : "arrow_drop_up";
-        filters.style.display = current_state ? "none" : "block";
-      }
-
-      makeSelection.addEventListener('change', () => onMakeChanged());
-      modelSelection.addEventListener('change', () => onModelChanged());
-      filterToggle.addEventListener('click', () => onFilterToggle());
-
-      $('.sidenav').sidenav();
-
-    </script>
 
   </body>
 </html>

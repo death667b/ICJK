@@ -120,18 +120,17 @@ def get_search_results(request, viewtype):
 
     query_result = [
         {"name": ("%s %s %s"%(car.make_name.title(), car.model.title(), car.series.title())),
-         "desc": "The %s %s %s made in %i is a %s %s with %i seats and a %i horsepower %iL engine." %
-                 (car.make_name.title(), car.model.title(), car.series, car.series_year, car.body_type.lower(), car.drive.lower()
-                  , car.seating_capacity, car.power, car.engine_size),
+         "desc": "The %s %s %s made in %i is a %s, %s with %i seats and a %iL, %i horsepower engine." %
+                 (car.make_name.title(), car.model.title(), car.series, car.series_year, car.drive.lower(), car.body_type.lower(), 
+                  car.seating_capacity, car.engine_size, car.power ),
          "link": "%s/%i"%(viewtype,car.id)}
         for car in query_set
         ]
 
-    storelist = Store.objects.all().order_by("name")
+    storelist = Store.objects.all().filter(~Q(name__icontains="null")).order_by("name")
     actlink = get_current_site(request).domain + request.get_full_path()
     actlink = actlink.replace("=", "%3D")
     actlink = actlink.replace("&", "%26")
-    print(actlink)
     profession_list = Customer.objects.order_by().values_list('occupation', flat=True).distinct()
 
     return {
