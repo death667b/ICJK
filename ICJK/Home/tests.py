@@ -197,13 +197,13 @@ class FilterTestCases(TestCase):
     def test_toyota4RunnerDeluxe(self):
         request = self.factory.get('/personal',{'make': 'TOYOTA','model':'4 RUNNER','year':'1989'})
         result = get_search_results(request, 'personal')
-        self.assertEqual(result["carlist"], [{'name': 'Toyota 4 Runner Deluxe 4X4', 'desc': 'The Toyota 4 Runner DELUXE 4x4 made in 1989 is a 4d wagon 4wd with 5 seats and a 75 horsepower 2L engine.', 'link': 'personal/15282'}] )
+        self.assertEqual(result["carlist"], [{'name': 'Toyota 4 Runner Deluxe 4X4', 'desc': 'The Toyota 4 Runner DELUXE 4x4 made in 1989 is a 4wd, 4d wagon with 5 seats and a 2L, 75 horsepower engine.', 'link': 'personal/15282'}] )
         #self.assertEqual(len(response.context['carlist']), 1)
 
     def test_MercedesE55_211Amg(self):
         request = self.factory.get('/personal',{'make': 'MERCEDES-BENZ','model':'E55','year':'2006'})
         result = get_search_results(request, 'personal')
-        self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a 4d sedan rwd with 5 seats and a 350 horsepower 5L engine.', 'link': 'personal/15042'}] )
+        self.assertEqual(result["carlist"], [{'name': 'Mercedes-Benz E55 211 My06 Upgrade Amg', 'desc': 'The Mercedes-Benz E55 211 MY06 UPGRADE AMG made in 2006 is a rwd, 4d sedan with 5 seats and a 5L, 350 horsepower engine.', 'link': 'personal/15042'}] )
 
     def test_make_model_year_filter(self):
         m = re.compile('\w+\/([0-9]+)')
@@ -275,3 +275,9 @@ class FilterTestCases(TestCase):
                 for ord in o:
                     last_store_id = last_order.fk_return_store_id.id
                     self.assertEqual(last_store_id, store.id)
+
+    # def test_store_filter_specific(self):
+    #     request = self.factory.get('/personal',{'store': "29" })
+    #     result = get_search_results(request, 'personal')
+    #     self.assertEqual(len(result["carlist"]), 9)
+    #     self.assertEqual(result["carlist"][0], [{'name': 'Audi 90 Sport', 'desc': 'The Audi 90 SPORT made in 1990 is a fwd, 4d sedan with 5 seats and a 2L, 100 horsepower engine.', 'link': 'personal/15309'}] )
