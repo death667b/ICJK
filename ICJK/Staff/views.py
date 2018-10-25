@@ -64,7 +64,7 @@ def priority_purchase_view(request):
     query_result = get_purchase_statistics(store)
 
     #select storelist for dropdown
-    storelist = Store.objects.all().order_by("name")
+    storelist = Store.objects.all().filter(~Q(name__icontains="null")).order_by("name")
 
     if (store != None):
         store = int(store)
