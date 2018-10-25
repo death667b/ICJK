@@ -191,7 +191,13 @@ def logout_view(request):
 
 @login_required(login_url='Staff:login')
 def geo_view(request):
+    
+    storelist = Store.objects.all().order_by("name")
+    
+    
     return render(request, "Staff/geo.html",{
         "applink": "http://" + get_current_site(request).domain + "/",
-        "appname": "ICJK Car Rentals"
+        "appname": "ICJK Car Rentals",
+        "storelist": storelist,
+
     })

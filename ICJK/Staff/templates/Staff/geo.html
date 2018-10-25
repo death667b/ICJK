@@ -6,11 +6,68 @@
 {% endblock %}
 
 {% block javascript %}
-<script src="{% static 'Staff/geo.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChkL1-v3Cgf3zc1BfNFucXnovUyZsRiBQ&callback=initMap"
+async defer></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    
+var map;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -26, lng: 134.644},
+    zoom: 5
+    });
+    
+    stores.forEach(address => geocode(address[0]))
+}
+
+  
+
+function geocode(location){
+axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+    params:{
+        address:location,
+        key:'AIzaSyChkL1-v3Cgf3zc1BfNFucXnovUyZsRiBQ'
+     }
+    })
+    .then(function(response){
+        const loc = response.data.results;
+        const {lng, lat} = loc[0].geometry.location;
+
+        new google.maps.Marker({
+            position: {lat: lat, lng: lng},
+            map: this.map
+        })
+    })
+    .catch(function(error){
+    console.log(error);
+    });
+   
+
+}  
+
+
+
+</script>
 {% endblock %}
 
-{% block page_content %}
+{% block page_content %} 
+
+    {% if storelist %}
+        <script>const stores = new Set();</script>
+        {% for store in storelist %}
+            <script>
+                //geocode('{{store.city}} , {{store.state}}')
+                //console.log('{{store.city}} , {{store.state}}')
+                stores.add(['{{store.city}}, {{store.state}}'])
+            </script>
+             
+        {% endfor %}
+    {% endif %}
+    
     <div id="map"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChkL1-v3Cgf3zc1BfNFucXnovUyZsRiBQ&callback=initMap"
-    async defer></script>
+    
+    
 {% endblock %}
+
