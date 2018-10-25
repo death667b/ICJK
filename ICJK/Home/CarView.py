@@ -1,4 +1,4 @@
-from .models import Car
+from .models import Car, Order
 from django.shortcuts import render
 from django.http import Http404
 from django.forms.models import model_to_dict
@@ -16,12 +16,16 @@ class CarView():
             self.car_data = car
             break
 
+    def get_latest_order_for_car(self):
+        return Order.objects.filter(fk_car_id=self.id).order_by('-return_date').first()
+
     def make_default_json_params(self, request):
         data = {
             "fullname": "%s %s %s"%(self.car_data.make_name.title(), self.car_data.model.title(), self.car_data.series.title()),
             "appname": "ICJK Car Rentals",
             "homelink": "http://" + get_current_site(request).domain,
             "actlink": get_current_site(request).domain + request.get_full_path(),
+            "location": self.get_latest_order_for_car()
         }
         model_data = model_to_dict(self.car_data)
         model_data_pretty = {}
