@@ -7,6 +7,7 @@ from .CarView import CarView, PersonalCarView, CommercialCarView
 from django.http import Http404, HttpRequest
 from .views import get_search_results
 import re
+from django.contrib.sites.shortcuts import get_current_site
 
 
 # Create your tests here.
@@ -110,6 +111,16 @@ class CarViewTestCases(TestCase):
             d = random.randint(1,100)
             view = CarView(random_car.id)
             self.assertEqual(view.get_rental_price_for_days(d), int((random_car.price_new * d)/500))
+
+    def test_social_links(self):
+        factory = RequestFactory()
+        random_car = self.get_random_car()
+        view = PersonalCarView(random_car.id)
+        request = factory.get('/personal')
+        json_response = view.make_default_json_params(request)
+        social_link = json_response["actlink"]
+        self.assertEqual(social_link, get_current_site(request).domain + request.get_full_path(),)
+
 
 class FilterTestCases(TestCase):
     def __init__(self, *args, **kwargs):

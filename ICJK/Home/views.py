@@ -131,7 +131,6 @@ def get_search_results(request, viewtype):
     actlink = get_current_site(request).domain + request.get_full_path()
     actlink = actlink.replace("=", "%3D")
     actlink = actlink.replace("&", "%26")
-    print(actlink)
     profession_list = Customer.objects.order_by().values_list('occupation', flat=True).distinct()
 
     return {
